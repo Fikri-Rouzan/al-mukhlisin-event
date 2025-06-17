@@ -1,0 +1,109 @@
+import { createRouter, createWebHistory } from "vue-router";
+import { supabase } from "../lib/supabase";
+
+import PublicLayout from "../layouts/PublicLayout.vue";
+import AdminLayout from "../layouts/AdminLayout.vue";
+
+import HomeView from "../views/HomeView.vue";
+import LoginView from "../views/LoginView.vue";
+import RegisterView from "../views/RegisterView.vue";
+import ProfileView from "../views/ProfileView.vue";
+import ResidentDataView from "../views/admin/ResidentDataView.vue";
+
+const routes = [
+  {
+    path: "/",
+    component: PublicLayout,
+    children: [
+      { path: "", name: "Home", component: HomeView },
+      {
+        path: "login",
+        name: "Login",
+        component: LoginView,
+        meta: { requiresGuest: true },
+      },
+      {
+        path: "register",
+        name: "Register",
+        component: RegisterView,
+        meta: { requiresGuest: true },
+      },
+      {
+        path: "profile",
+        name: "Profile",
+        component: ProfileView,
+        meta: { requiresAuth: true, role: "resident" },
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    component: AdminLayout,
+    meta: { requiresAuth: true, role: "admin" },
+    children: [
+      {
+        path: "residents",
+        name: "AdminResidents",
+        component: ResidentDataView,
+      },
+    ],
+  },
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user;
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.role === "admin" && !to.path.startsWith("/admin")) {
+      return next("/admin/residents");
+    }
+  }
+
+  if (to.meta.requiresGuest && user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    if (profile?.role === "admin") {
+      return next("/admin/residents");
+    }
+    return next("/");
+  }
+
+  if (to.meta.requiresAuth) {
+    if (!user) {
+      return next("/login");
+    }
+
+    if (to.meta.role) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      if (profile?.role !== to.meta.role) {
+        if (profile?.role === "admin") return next("/admin/residents");
+        return next("/");
+      }
+    }
+  }
+
+  next();
+});
+
+export default router;
