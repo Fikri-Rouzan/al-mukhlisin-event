@@ -10,7 +10,12 @@ defineProps({
   defaultAvatar: String,
 });
 
-const emit = defineEmits(["close", "save", "fileChange"]);
+const emit = defineEmits([
+  "close",
+  "save",
+  "fileChange",
+  "update:committeeForm",
+]);
 
 function handleFileChange(event) {
   emit("fileChange", event);

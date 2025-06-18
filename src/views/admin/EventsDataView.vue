@@ -80,8 +80,13 @@ async function openEditModal(event) {
     );
   }
 
+  const eventDetails = data.details;
+  if (eventDetails.event_date) {
+    eventDetails.event_date = eventDetails.event_date.slice(0, 16);
+  }
+
   eventForm.value = {
-    ...data.details,
+    ...eventDetails,
     committee: data.committee,
     speakers: data.speakers,
   };
