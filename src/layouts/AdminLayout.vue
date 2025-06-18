@@ -17,6 +17,11 @@ const { logout } = useAuth();
           class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors"
           >Data Resident</RouterLink
         >
+        <RouterLink
+          to="/admin/committee"
+          class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors"
+          >Data Panitia</RouterLink
+        >
       </nav>
       <div class="p-4 border-t border-gray-700">
         <button

@@ -9,6 +9,7 @@ import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import ResidentDataView from "../views/admin/ResidentDataView.vue";
+import CommitteeDataView from "../views/admin/CommitteeDataView.vue";
 
 const routes = [
   {
@@ -45,6 +46,11 @@ const routes = [
         path: "residents",
         name: "AdminResidents",
         component: ResidentDataView,
+      },
+      {
+        path: "committee",
+        name: "AdminCommittee",
+        component: CommitteeDataView,
       },
     ],
   },
