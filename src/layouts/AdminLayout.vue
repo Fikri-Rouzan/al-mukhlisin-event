@@ -27,6 +27,11 @@ const { logout } = useAuth();
           class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors"
           >Data Narasumber</RouterLink
         >
+        <RouterLink
+          to="/admin/events"
+          class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors"
+          >Data Acara</RouterLink
+        >
       </nav>
       <div class="p-4 border-t border-gray-700">
         <button
