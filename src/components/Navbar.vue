@@ -18,6 +18,9 @@ const { user } = useAuth();
         <RouterLink to="/" class="hover:text-secondary transition-colors"
           >Home</RouterLink
         >
+        <RouterLink to="/events" class="hover:text-secondary transition-colors"
+          >Kegiatan</RouterLink
+        >
         <RouterLink
           v-if="user"
           to="/profile"

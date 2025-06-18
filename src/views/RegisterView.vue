@@ -49,6 +49,8 @@ const handleRegister = async () => {
 
     if (error) throw error;
 
+    await supabase.auth.signOut();
+
     await Swal.fire({
       icon: "success",
       title: "Registration Successful!",

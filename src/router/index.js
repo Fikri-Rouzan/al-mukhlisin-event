@@ -15,6 +15,8 @@ import SpeakersDataView from "../views/admin/SpeakersDataView.vue";
 import SpeakersDetailView from "../views/admin/SpeakersDetailView.vue";
 import EventsDataView from "../views/admin/EventsDataView.vue";
 import EventDetailView from "../views/admin/EventDetailView.vue";
+import EventsListView from "../views/EventsListView.vue";
+import EventDetailPublicView from "../views/EventDetailPublicView.vue";
 
 const routes = [
   {
@@ -39,6 +41,16 @@ const routes = [
         name: "Profile",
         component: ProfileView,
         meta: { requiresAuth: true, role: "resident" },
+      },
+      {
+        path: "events",
+        name: "EventsList",
+        component: EventsListView,
+      },
+      {
+        path: "events/:id",
+        name: "EventDetailPublic",
+        component: EventDetailPublicView,
       },
     ],
   },
