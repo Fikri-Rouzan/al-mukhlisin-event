@@ -176,88 +176,80 @@ onMounted(fetchAllData);
 
 <template>
   <div>
-    <div class="flex justify-between items-center mb-6">
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"
+    >
       <h1 class="text-3xl font-bold">Data Kegiatan</h1>
       <button
         @click="openCreateModal"
-        class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90"
+        class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto"
       >
-        + Create New Event
+        Create New Event
       </button>
     </div>
 
-    <div class="bg-white shadow-md rounded-lg overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+    <div class="w-full overflow-hidden rounded-lg shadow-md">
+      <div class="w-full overflow-x-auto">
+        <table class="min-w-full whitespace-nowrap">
+          <thead class="bg-gray-50">
+            <tr
+              class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Photo
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+              <th class="px-6 py-3">Photo</th>
+              <th class="px-6 py-3">Name</th>
+              <th class="px-6 py-3">Category</th>
+              <th class="px-6 py-3">Date</th>
+              <th class="px-6 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-if="loading">
+              <td colspan="5" class="px-6 py-4 text-center">Loading...</td>
+            </tr>
+            <tr v-else-if="events.length === 0">
+              <td colspan="5" class="px-6 py-4 text-center">
+                No events found.
+              </td>
+            </tr>
+            <tr
+              v-for="event in events"
+              :key="event.id"
+              class="hover:bg-gray-50"
             >
-              Name
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-            >
-              Category
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-            >
-              Date
-            </th>
-            <th
-              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-if="loading">
-            <td colspan="5" class="text-center p-4">Loading...</td>
-          </tr>
-          <tr v-else-if="events.length === 0">
-            <td colspan="5" class="text-center p-4">No events found.</td>
-          </tr>
-          <tr v-for="event in events" :key="event.id" class="hover:bg-gray-50">
-            <td class="px-6 py-4">
-              <img
-                :src="event.photo_url || defaultAvatar"
-                class="w-16 h-10 object-cover rounded text-gray-300"
-              />
-            </td>
-            <td class="px-6 py-4 font-medium">{{ event.name }}</td>
-            <td class="px-6 py-4">{{ event.category }}</td>
-            <td class="px-6 py-4">
-              {{ new Date(event.event_date).toLocaleString("id-ID") }}
-            </td>
-            <td class="px-6 py-4 text-right">
-              <router-link
-                :to="`/admin/events/${event.id}`"
-                class="text-green-600 hover:text-green-900 mr-4 inline-block align-middle"
-                ><Eye class="w-5 h-5"
-              /></router-link>
-              <button
-                @click="openEditModal(event)"
-                class="text-indigo-600 hover:text-indigo-900 mr-4"
-              >
-                <Pencil class="w-5 h-5" />
-              </button>
-              <button
-                @click="handleDelete(event)"
-                class="text-red-600 hover:text-red-900"
-              >
-                <Trash2 class="w-5 h-5" />
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <td class="px-6 py-4">
+                <img
+                  :src="event.photo_url || defaultAvatar"
+                  class="w-16 h-10 object-cover rounded text-gray-300"
+                />
+              </td>
+              <td class="px-6 py-4 font-medium">{{ event.name }}</td>
+              <td class="px-6 py-4">{{ event.category }}</td>
+              <td class="px-6 py-4">
+                {{ new Date(event.event_date).toLocaleString("id-ID") }}
+              </td>
+              <td class="px-6 py-4 text-right">
+                <router-link
+                  :to="`/admin/events/${event.id}`"
+                  class="text-green-600 hover:text-green-900 mr-4 inline-block align-middle"
+                  ><Eye class="w-5 h-5"
+                /></router-link>
+                <button
+                  @click="openEditModal(event)"
+                  class="text-indigo-600 hover:text-indigo-900 mr-4 inline-block align-middle"
+                >
+                  <Pencil class="w-5 h-5" />
+                </button>
+                <button
+                  @click="handleDelete(event)"
+                  class="text-red-600 hover:text-red-900 inline-block align-middle"
+                >
+                  <Trash2 class="w-5 h-5" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <EventModal

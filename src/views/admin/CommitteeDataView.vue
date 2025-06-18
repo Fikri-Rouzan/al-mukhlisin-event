@@ -145,86 +145,76 @@ onMounted(fetchCommitteeMembers);
 
 <template>
   <div>
-    <div class="flex justify-between items-center mb-6">
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"
+    >
       <h1 class="text-3xl font-bold">Data Panitia</h1>
       <button
         @click="openCreateModal"
-        class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90"
+        class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto"
       >
-        + Create New Member
+        Create New Member
       </button>
     </div>
 
-    <div class="bg-white shadow-md rounded-lg overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+    <div class="w-full overflow-hidden rounded-lg shadow-md">
+      <div class="w-full overflow-x-auto">
+        <table class="min-w-full whitespace-nowrap">
+          <thead class="bg-gray-50">
+            <tr
+              class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Photo
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+              <th class="px-6 py-3">Photo</th>
+              <th class="px-6 py-3">Name</th>
+              <th class="px-6 py-3">Position</th>
+              <th class="px-6 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-if="loading">
+              <td colspan="4" class="px-6 py-4 text-center">Loading...</td>
+            </tr>
+            <tr v-else-if="committeeMembers.length === 0">
+              <td colspan="4" class="px-6 py-4 text-center">No data found.</td>
+            </tr>
+            <tr
+              v-for="member in committeeMembers"
+              :key="member.id"
+              class="hover:bg-gray-50"
             >
-              Name
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-            >
-              Position
-            </th>
-            <th
-              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-if="loading">
-            <td colspan="4" class="text-center p-4">Loading...</td>
-          </tr>
-          <tr v-else-if="committeeMembers.length === 0">
-            <td colspan="4" class="text-center p-4">No data found.</td>
-          </tr>
-          <tr
-            v-for="member in committeeMembers"
-            :key="member.id"
-            class="hover:bg-gray-50"
-          >
-            <td class="px-6 py-4">
-              <img
-                :src="member.photo_url || defaultAvatar"
-                alt="Photo"
-                class="w-10 h-10 rounded-full object-cover text-gray-300"
-              />
-            </td>
-            <td class="px-6 py-4">{{ member.name }}</td>
-            <td class="px-6 py-4">{{ member.position }}</td>
-            <td class="px-6 py-4 text-right">
-              <router-link
-                :to="`/admin/committee/${member.id}`"
-                class="text-green-600 hover:text-green-900 mr-4 inline-block align-middle"
-              >
-                <Eye class="w-5 h-5" />
-              </router-link>
-              <button
-                @click="openEditModal(member)"
-                class="text-indigo-600 hover:text-indigo-900 mr-4"
-              >
-                <Pencil class="w-5 h-5" />
-              </button>
-              <button
-                @click="handleDelete(member)"
-                class="text-red-600 hover:text-red-900"
-              >
-                <Trash2 class="w-5 h-5" />
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <td class="px-6 py-4">
+                <img
+                  :src="member.photo_url || defaultAvatar"
+                  alt="Photo"
+                  class="w-10 h-10 rounded-full object-cover text-gray-300"
+                />
+              </td>
+              <td class="px-6 py-4">{{ member.name }}</td>
+              <td class="px-6 py-4">{{ member.position }}</td>
+              <td class="px-6 py-4 text-right">
+                <router-link
+                  :to="`/admin/committee/${member.id}`"
+                  class="text-green-600 hover:text-green-900 mr-4 inline-block align-middle"
+                >
+                  <Eye class="w-5 h-5" />
+                </router-link>
+                <button
+                  @click="openEditModal(member)"
+                  class="text-indigo-600 hover:text-indigo-900 mr-4 inline-block align-middle"
+                >
+                  <Pencil class="w-5 h-5" />
+                </button>
+                <button
+                  @click="handleDelete(member)"
+                  class="text-red-600 hover:text-red-900 inline-block align-middle"
+                >
+                  <Trash2 class="w-5 h-5" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <CommitteeModal

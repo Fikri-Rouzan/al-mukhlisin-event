@@ -1,50 +1,42 @@
 <script setup>
-import { RouterView, RouterLink } from "vue-router";
+import { ref } from "vue";
+import { RouterView } from "vue-router";
 import { useAuth } from "../composables/useAuth";
+import { Menu } from "lucide-vue-next";
+import AdminSidebar from "../components/AdminSidebar.vue";
 
 const { logout } = useAuth();
+const isSidebarOpen = ref(false);
+
+const closeSidebar = () => {
+  isSidebarOpen.value = false;
+};
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-gray-100">
-    <aside class="w-64 bg-gray-800 text-white flex flex-col">
-      <div class="p-4 border-b border-gray-700">
-        <h2 class="text-xl font-bold">Admin Menu</h2>
-      </div>
-      <nav class="flex-1 p-4 space-y-2">
-        <RouterLink
-          to="/admin/residents"
-          class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors"
-          >Data Resident</RouterLink
-        >
-        <RouterLink
-          to="/admin/committee"
-          class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors"
-          >Data Panitia</RouterLink
-        >
-        <RouterLink
-          to="/admin/speakers"
-          class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors"
-          >Data Narasumber</RouterLink
-        >
-        <RouterLink
-          to="/admin/events"
-          class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors"
-          >Data Acara</RouterLink
-        >
-      </nav>
-      <div class="p-4 border-t border-gray-700">
-        <button
-          @click="logout"
-          class="w-full text-left p-2 rounded-lg hover:bg-red-700 transition-colors"
-        >
-          Logout
-        </button>
-      </div>
-    </aside>
+  <div class="relative min-h-screen md:flex">
+    <div
+      v-if="isSidebarOpen"
+      @click="closeSidebar"
+      class="fixed inset-0 z-20 bg-black opacity-50 md:hidden"
+    ></div>
 
-    <main class="flex-1 p-8">
-      <RouterView />
-    </main>
+    <AdminSidebar
+      :is-open="isSidebarOpen"
+      :logout="logout"
+      :close-sidebar="closeSidebar"
+    />
+
+    <div class="flex-1 flex flex-col">
+      <header class="p-4 bg-white shadow-md md:hidden">
+        <button @click="isSidebarOpen = true">
+          <Menu class="w-6 h-6" />
+        </button>
+      </header>
+
+      <main class="flex-1 p-4 sm:p-6 lg:p-8">
+        <RouterView />
+      </main>
+    </div>
   </div>
 </template>
