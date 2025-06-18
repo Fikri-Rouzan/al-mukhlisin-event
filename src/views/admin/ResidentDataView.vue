@@ -3,18 +3,13 @@ import { ref, onMounted } from "vue";
 import { supabase } from "../../lib/supabase";
 import { Pencil, Trash2 } from "lucide-vue-next";
 import Swal from "sweetalert2";
-import Modal from "../../components/Modal.vue";
+import ResidentModal from "../../components/admin/ResidentModal.vue";
 
 const residents = ref([]);
 const loading = ref(true);
 const isModalOpen = ref(false);
 const isEditMode = ref(false);
-const residentForm = ref({
-  id: null,
-  name: "",
-  email: "",
-  password: "",
-});
+const residentForm = ref({ id: null, name: "", email: "", password: "" });
 const isSaving = ref(false);
 
 async function fetchResidents() {
@@ -31,13 +26,11 @@ async function fetchResidents() {
 }
 
 function openCreateModal() {
-  /* Tidak berubah */
   isEditMode.value = false;
   residentForm.value = { id: null, name: "", email: "", password: "" };
   isModalOpen.value = true;
 }
 function openEditModal(resident) {
-  /* Tidak berubah */
   isEditMode.value = true;
   residentForm.value = { ...resident, password: "" };
   isModalOpen.value = true;
@@ -87,7 +80,7 @@ async function handleSaveResident() {
 
 async function handleDeleteResident(resident) {
   const { isConfirmed } = await Swal.fire({
-    /* Dialog konfirmasi tidak berubah */ title: "Are you sure?",
+    title: "Are you sure?",
     text: `You are about to delete ${resident.name}. You won't be able to revert this!`,
     icon: "warning",
     showCancelButton: true,
@@ -187,71 +180,14 @@ onMounted(() => {
       </table>
     </div>
 
-    <Modal :isOpen="isModalOpen" @close="closeModal">
-      <template #header>{{
-        isEditMode ? "Edit Resident" : "Create New Resident"
-      }}</template>
-      <template #body>
-        <form @submit.prevent="handleSaveResident" id="resident-form">
-          <div class="space-y-4">
-            <div>
-              <label for="name" class="block text-sm font-medium text-gray-700"
-                >Name</label
-              >
-              <input
-                v-model="residentForm.name"
-                type="text"
-                id="name"
-                required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-              />
-            </div>
-            <div>
-              <label for="email" class="block text-sm font-medium text-gray-700"
-                >Email</label
-              >
-              <input
-                v-model="residentForm.email"
-                type="email"
-                id="email"
-                :disabled="isEditMode"
-                :required="!isEditMode"
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm disabled:bg-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
-              />
-            </div>
-            <div>
-              <label
-                for="password"
-                class="block text-sm font-medium text-gray-700"
-                >Password</label
-              >
-              <input
-                v-model="residentForm.password"
-                type="password"
-                id="password"
-                :placeholder="isEditMode ? 'Leave blank to keep unchanged' : ''"
-                :required="!isEditMode"
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-              />
-            </div>
-          </div>
-        </form>
-      </template>
-      <template #footer>
-        <button
-          @click="closeModal"
-          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          form="resident-form"
-          class="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90"
-        >
-          Save
-        </button>
-      </template>
-    </Modal>
+    <ResidentModal
+      :isOpen="isModalOpen"
+      :isEditMode="isEditMode"
+      :residentForm="residentForm"
+      :isSaving="isSaving"
+      @close="isModalOpen = false"
+      @save="handleSaveResident"
+      @update:residentForm="residentForm = $event"
+    />
   </div>
 </template>
