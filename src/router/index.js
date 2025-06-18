@@ -5,8 +5,8 @@ import PublicLayout from "../layouts/PublicLayout.vue";
 import AdminLayout from "../layouts/AdminLayout.vue";
 
 import HomeView from "../views/HomeView.vue";
-import LoginView from "../views/LoginView.vue";
-import RegisterView from "../views/RegisterView.vue";
+import LoginView from "../views/auth/LoginView.vue";
+import RegisterView from "../views/auth/RegisterView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import ResidentDataView from "../views/admin/ResidentDataView.vue";
 import CommitteeDataView from "../views/admin/CommitteeDataView.vue";

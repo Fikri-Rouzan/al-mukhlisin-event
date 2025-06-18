@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-vue-next";
 
