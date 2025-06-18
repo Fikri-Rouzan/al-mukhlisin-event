@@ -9,3 +9,7 @@
 * {
   font-family: var(--font-outfit);
 }
+
+.nav-item.router-link-exact-active {
+  @apply bg-secondary;
+}
