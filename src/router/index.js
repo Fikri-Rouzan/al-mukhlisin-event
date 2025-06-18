@@ -10,6 +10,9 @@ import RegisterView from "../views/RegisterView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import ResidentDataView from "../views/admin/ResidentDataView.vue";
 import CommitteeDataView from "../views/admin/CommitteeDataView.vue";
+import CommitteeDetailView from "../views/admin/CommitteeDetailView.vue";
+import SpeakersDataView from "../views/admin/SpeakersDataView.vue";
+import SpeakersDetailView from "../views/admin/SpeakersDetailView.vue";
 
 const routes = [
   {
@@ -51,6 +54,21 @@ const routes = [
         path: "committee",
         name: "AdminCommittee",
         component: CommitteeDataView,
+      },
+      {
+        path: "committee/:id",
+        name: "AdminCommitteeDetail",
+        component: CommitteeDetailView,
+      },
+      {
+        path: "speakers",
+        name: "AdminSpeakers",
+        component: SpeakersDataView,
+      },
+      {
+        path: "speakers/:id",
+        name: "AdminSpeakerDetail",
+        component: SpeakersDetailView,
       },
     ],
   },

@@ -3,18 +3,17 @@ import { ref, onMounted } from "vue";
 import { supabase } from "../../lib/supabase";
 import { Pencil, Trash2, Eye } from "lucide-vue-next";
 import Swal from "sweetalert2";
-import CommitteeModal from "../../components/admin/CommitteeModal.vue";
+import SpeakersModal from "../../components/admin/SpeakersModal.vue";
 
-const committeeMembers = ref([]);
+const speakers = ref([]);
 const loading = ref(true);
 const isModalOpen = ref(false);
 const isEditMode = ref(false);
 const isSaving = ref(false);
-const committeeForm = ref({
+const speakerForm = ref({
   id: null,
   name: "",
   photo_url: "",
-  position: "",
   phone_number: "",
   address: "",
 });
@@ -23,15 +22,15 @@ const photoPreview = ref(null);
 
 const defaultAvatar = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle-2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>`;
 
-async function fetchCommitteeMembers() {
+async function fetchSpeakers() {
   try {
     loading.value = true;
     const { data, error } = await supabase
-      .from("committee_members")
+      .from("speakers")
       .select("*")
       .order("name");
     if (error) throw error;
-    committeeMembers.value = data;
+    speakers.value = data;
   } catch (error) {
     Swal.fire("Error", `Failed to fetch data: ${error.message}`, "error");
   } finally {
@@ -49,11 +48,10 @@ function onFileChange(event) {
 
 function openCreateModal() {
   isEditMode.value = false;
-  committeeForm.value = {
+  speakerForm.value = {
     id: null,
     name: "",
     photo_url: "",
-    position: "",
     phone_number: "",
     address: "",
   };
@@ -62,42 +60,43 @@ function openCreateModal() {
   isModalOpen.value = true;
 }
 
-function openEditModal(member) {
+function openEditModal(speaker) {
   isEditMode.value = true;
-  committeeForm.value = { ...member };
+  speakerForm.value = { ...speaker };
   newPhotoFile.value = null;
-  photoPreview.value = member.photo_url;
+  photoPreview.value = speaker.photo_url;
   isModalOpen.value = true;
 }
 
 async function handleSave() {
   isSaving.value = true;
-  let finalPhotoUrl = committeeForm.value.photo_url;
+  let finalPhotoUrl = speakerForm.value.photo_url;
 
   try {
     if (newPhotoFile.value) {
-      if (isEditMode.value && committeeForm.value.photo_url) {
-        const oldFilePath = new URL(committeeForm.value.photo_url).pathname
-          .split("/")
+      if (isEditMode.value && speakerForm.value.photo_url) {
+        const oldFilePath = new URL(speakerForm.value.photo_url).pathname
+          .split("speaker-photos/")
           .pop();
-        await supabase.storage.from("committee-photos").remove([oldFilePath]);
+        await supabase.storage.from("speaker-photos").remove([oldFilePath]);
       }
 
       const fileName = `${Date.now()}-${newPhotoFile.value.name}`;
+
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("committee-photos")
+        .from("speaker-photos")
         .upload(fileName, newPhotoFile.value);
 
       if (uploadError) throw uploadError;
 
       const { data: urlData } = supabase.storage
-        .from("committee-photos")
+        .from("speaker-photos")
         .getPublicUrl(uploadData.path);
       finalPhotoUrl = urlData.publicUrl;
     }
 
-    const payload = { ...committeeForm.value, photo_url: finalPhotoUrl };
-    const response = await supabase.functions.invoke("manage-committee", {
+    const payload = { ...speakerForm.value, photo_url: finalPhotoUrl };
+    const response = await supabase.functions.invoke("manage-speaker", {
       method: isEditMode.value ? "PATCH" : "POST",
       body: payload,
     });
@@ -106,11 +105,11 @@ async function handleSave() {
 
     Swal.fire(
       "Success",
-      `Committee member ${isEditMode.value ? "updated" : "created"}!`,
+      `Speaker ${isEditMode.value ? "updated" : "created"}!`,
       "success"
     );
     isModalOpen.value = false;
-    fetchCommitteeMembers();
+    fetchSpeakers();
   } catch (error) {
     Swal.fire("Error", error.message, "error");
   } finally {
@@ -118,40 +117,40 @@ async function handleSave() {
   }
 }
 
-async function handleDelete(member) {
+async function handleDelete(speaker) {
   const { isConfirmed } = await Swal.fire({
     title: "Are you sure?",
-    text: `Delete ${member.name}?`,
+    text: `Delete ${speaker.name}?`,
     icon: "warning",
     showCancelButton: true,
   });
   if (isConfirmed) {
     try {
-      const { error } = await supabase.functions.invoke("manage-committee", {
+      const { error } = await supabase.functions.invoke("manage-speaker", {
         method: "DELETE",
-        body: { id: member.id, photo_url: member.photo_url },
+        body: { id: speaker.id, photo_url: speaker.photo_url },
       });
       if (error) throw error;
       Swal.fire("Deleted!", "Data has been deleted.", "success");
-      fetchCommitteeMembers();
+      fetchSpeakers();
     } catch (error) {
       Swal.fire("Error", error.message, "error");
     }
   }
 }
 
-onMounted(fetchCommitteeMembers);
+onMounted(fetchSpeakers);
 </script>
 
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">Data Panitia</h1>
+      <h1 class="text-3xl font-bold">Data Narasumber</h1>
       <button
         @click="openCreateModal"
         class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90"
       >
-        + Create New Member
+        + Create New Speaker
       </button>
     </div>
 
@@ -172,7 +171,7 @@ onMounted(fetchCommitteeMembers);
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
             >
-              Position
+              Phone Number
             </th>
             <th
               class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase"
@@ -185,38 +184,38 @@ onMounted(fetchCommitteeMembers);
           <tr v-if="loading">
             <td colspan="4" class="text-center p-4">Loading...</td>
           </tr>
-          <tr v-else-if="committeeMembers.length === 0">
+          <tr v-else-if="speakers.length === 0">
             <td colspan="4" class="text-center p-4">No data found.</td>
           </tr>
           <tr
-            v-for="member in committeeMembers"
-            :key="member.id"
+            v-for="speaker in speakers"
+            :key="speaker.id"
             class="hover:bg-gray-50"
           >
             <td class="px-6 py-4">
               <img
-                :src="member.photo_url || defaultAvatar"
+                :src="speaker.photo_url || defaultAvatar"
                 alt="Photo"
                 class="w-10 h-10 rounded-full object-cover text-gray-300"
               />
             </td>
-            <td class="px-6 py-4">{{ member.name }}</td>
-            <td class="px-6 py-4">{{ member.position }}</td>
+            <td class="px-6 py-4">{{ speaker.name }}</td>
+            <td class="px-6 py-4">{{ speaker.phone_number }}</td>
             <td class="px-6 py-4 text-right">
               <router-link
-                :to="`/admin/committee/${member.id}`"
+                :to="`/admin/speakers/${speaker.id}`"
                 class="text-green-600 hover:text-green-900 mr-4 inline-block align-middle"
               >
                 <Eye class="w-5 h-5" />
               </router-link>
               <button
-                @click="openEditModal(member)"
+                @click="openEditModal(speaker)"
                 class="text-indigo-600 hover:text-indigo-900 mr-4"
               >
                 <Pencil class="w-5 h-5" />
               </button>
               <button
-                @click="handleDelete(member)"
+                @click="handleDelete(speaker)"
                 class="text-red-600 hover:text-red-900"
               >
                 <Trash2 class="w-5 h-5" />
@@ -227,17 +226,17 @@ onMounted(fetchCommitteeMembers);
       </table>
     </div>
 
-    <CommitteeModal
+    <SpeakersModal
       :isOpen="isModalOpen"
       :isEditMode="isEditMode"
-      :committeeForm="committeeForm"
+      :speakerForm="speakerForm"
       :isSaving="isSaving"
       :photoPreview="photoPreview"
       :defaultAvatar="defaultAvatar"
       @close="isModalOpen = false"
       @save="handleSave"
       @fileChange="onFileChange"
-      @update:committeeForm="committeeForm = $event"
+      @update:speakerForm="speakerForm = $event"
     />
   </div>
 </template>
