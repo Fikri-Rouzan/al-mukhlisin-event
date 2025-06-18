@@ -1,6 +1,7 @@
 import { ref, onMounted } from "vue";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const user = ref(null);
 const profile = ref(null);
@@ -19,7 +20,15 @@ export function useAuth() {
       if (error) throw error;
       profile.value = data;
     } catch (error) {
-      console.error("Error fetching profile:", error);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Gagal Mengambil Profil Pengguna!",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
       profile.value = null;
     }
   };
@@ -28,11 +37,30 @@ export function useAuth() {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Logout Berhasil!",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
       user.value = null;
       profile.value = null;
       router.push("/");
     } catch (error) {
-      console.error("Error logging out:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Logout Gagal",
+        text: error.message,
+      });
     }
   };
 

@@ -23,11 +23,25 @@ const handleLogin = async () => {
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("role")
+      .select("role, name")
       .eq("id", data.user.id)
       .single();
 
     if (profileError) throw profileError;
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      title: `Selamat Datang Kembali, ${profile.name || "Admin"}!`,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
 
     if (profile.role === "admin") {
       router.push("/admin/residents");
@@ -35,7 +49,7 @@ const handleLogin = async () => {
       router.push("/");
     }
   } catch (error) {
-    Swal.fire({ icon: "error", title: "Login Failed", text: error.message });
+    Swal.fire({ icon: "error", title: "Login Gagal", text: error.message });
   } finally {
     loading.value = false;
   }

@@ -21,7 +21,7 @@ const handleRegister = async () => {
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: "All fields are required.",
+      text: "Semua field harus diisi",
     });
     return;
   }
@@ -29,7 +29,7 @@ const handleRegister = async () => {
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: "Passwords do not match.",
+      text: "Password tidak cocok",
     });
     return;
   }
@@ -53,14 +53,14 @@ const handleRegister = async () => {
 
     await Swal.fire({
       icon: "success",
-      title: "Registration Successful!",
-      text: "Please login to continue.",
+      title: "Registrasi Berhasil!",
+      text: "Silakan login untuk melanjutkan",
     });
     router.push("/login");
   } catch (error) {
     Swal.fire({
       icon: "error",
-      title: "Registration Failed",
+      title: "Registrasi Gagal",
       text: error.message,
     });
   } finally {

@@ -13,7 +13,7 @@ const confirmLogout = () => {
   props.closeSidebar();
   Swal.fire({
     title: "Apakah Anda yakin?",
-    text: "Anda akan keluar dari sesi admin ini.",
+    text: "Anda akan keluar dari sesi admin ini",
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Ya, Logout!",
