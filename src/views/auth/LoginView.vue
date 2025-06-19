@@ -116,9 +116,9 @@ const handleLogin = async () => {
         <button
           type="submit"
           :disabled="loading"
-          class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-colors disabled:bg-gray-400 cursor-pointer"
+          class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-colors disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
         >
-          {{ loading ? "Sedang login..." : "Login" }}
+          {{ loading ? "Sedang Login..." : "Login" }}
         </button>
       </form>
       <p class="text-center">

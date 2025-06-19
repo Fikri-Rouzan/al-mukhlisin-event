@@ -35,7 +35,7 @@ const closeMenu = () => {
           class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors"
         >
           <Home :size="18" />
-          <span>Home</span>
+          <span>Beranda</span>
         </RouterLink>
         <RouterLink
           to="/events"
@@ -96,7 +96,7 @@ const closeMenu = () => {
           class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
         >
           <Home :size="22" />
-          <span>Home</span>
+          <span>Beranda</span>
         </RouterLink>
         <RouterLink
           to="/events"

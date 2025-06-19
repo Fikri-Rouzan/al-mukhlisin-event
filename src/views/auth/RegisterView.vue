@@ -189,7 +189,7 @@ const handleRegister = async () => {
         <button
           type="submit"
           :disabled="loading"
-          class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-colors disabled:bg-gray-400 cursor-pointer"
+          class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-colors disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
         >
           {{ loading ? "Mendaftar..." : "Daftar" }}
         </button>
