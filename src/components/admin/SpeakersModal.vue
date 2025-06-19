@@ -1,5 +1,6 @@
 <script setup>
 import Modal from "../Modal.vue";
+import { User, Phone, MapPin } from "lucide-vue-next";
 
 defineProps({
   isOpen: Boolean,
@@ -19,11 +20,13 @@ function handleFileChange(event) {
 
 <template>
   <Modal :isOpen="isOpen" @close="$emit('close')">
-    <template #header>{{ isEditMode ? "Edit" : "Create" }} Speaker</template>
+    <template #header
+      >{{ isEditMode ? "Edit " : "Buat " }} Data Narasumber
+    </template>
     <template #body>
       <form @submit.prevent="$emit('save')" id="speaker-form" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Photo</label>
+          <p class="block text-sm font-medium text-gray-700">Foto</p>
           <div class="mt-1 flex items-center space-x-4">
             <img
               :src="photoPreview || defaultAvatar"
@@ -38,55 +41,112 @@ function handleFileChange(event) {
             />
           </div>
         </div>
-        <input
-          :value="speakerForm.name"
-          @input="
-            $emit('update:speakerForm', {
-              ...speakerForm,
-              name: $event.target.value,
-            })
-          "
-          type="text"
-          placeholder="Name"
-          required
-          class="w-full p-2 border rounded"
-        />
-        <input
-          :value="speakerForm.phone_number"
-          @input="
-            $emit('update:speakerForm', {
-              ...speakerForm,
-              phone_number: $event.target.value,
-            })
-          "
-          type="text"
-          placeholder="Phone Number"
-          class="w-full p-2 border rounded"
-        />
-        <textarea
-          :value="speakerForm.address"
-          @input="
-            $emit('update:speakerForm', {
-              ...speakerForm,
-              address: $event.target.value,
-            })
-          "
-          placeholder="Address"
-          class="w-full p-2 border rounded"
-        ></textarea>
+
+        <div>
+          <label
+            for="speaker-name"
+            class="block text-sm font-medium text-gray-700"
+            >Nama</label
+          >
+          <div class="relative mt-1">
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+            >
+              <User class="w-5 h-5 text-gray-400" />
+            </div>
+            <input
+              :value="speakerForm.name"
+              @input="
+                $emit('update:speakerForm', {
+                  ...speakerForm,
+                  name: $event.target.value,
+                })
+              "
+              type="text"
+              id="speaker-name"
+              :placeholder="'Masukkan nama ' + (isEditMode ? 'baru' : '')"
+              required
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            for="speaker-phone"
+            class="block text-sm font-medium text-gray-700"
+            >Nomor Telepon</label
+          >
+          <div class="relative mt-1">
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+            >
+              <Phone class="w-5 h-5 text-gray-400" />
+            </div>
+            <input
+              :value="speakerForm.phone_number"
+              @input="
+                $emit('update:speakerForm', {
+                  ...speakerForm,
+                  phone_number: $event.target.value,
+                })
+              "
+              type="number"
+              min="0"
+              id="speaker-phone"
+              :placeholder="
+                'Masukkan nomor telepon ' + (isEditMode ? 'baru' : '')
+              "
+              required
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            for="speaker-address"
+            class="block text-sm font-medium text-gray-700"
+            >Alamat</label
+          >
+          <div class="relative mt-1">
+            <div
+              class="absolute top-0 left-0 pt-3 pl-3 flex items-center pointer-events-none"
+            >
+              <MapPin class="w-5 h-5 text-gray-400" />
+            </div>
+            <textarea
+              :value="speakerForm.address"
+              @input="
+                $emit('update:speakerForm', {
+                  ...speakerForm,
+                  address: $event.target.value,
+                })
+              "
+              id="speaker-address"
+              required
+              rows="3"
+              :placeholder="'Masukkan alamat ' + (isEditMode ? 'baru' : '')"
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+            ></textarea>
+          </div>
+        </div>
       </form>
     </template>
     <template #footer>
-      <button @click="$emit('close')" class="px-4 py-2 bg-gray-200 rounded">
-        Cancel
+      <button
+        @click="$emit('close')"
+        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 cursor-pointer transition-colors"
+      >
+        Batal
       </button>
       <button
         type="submit"
         form="speaker-form"
         :disabled="isSaving"
-        class="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-400"
+        class="px-4 py-2 bg-primary hover:bg-secondary text-white rounded-md disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed transition-colors"
       >
-        {{ isSaving ? "Saving..." : "Save" }}
+        {{ isSaving ? "Menyimpan..." : "Simpan" }}
       </button>
     </template>
   </Modal>

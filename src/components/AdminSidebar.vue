@@ -12,10 +12,11 @@ const props = defineProps({
 const confirmLogout = () => {
   props.closeSidebar();
   Swal.fire({
-    title: "Apakah Anda yakin?",
-    text: "Anda akan keluar dari sesi admin ini",
+    title: "Ingin Logout?",
+    text: "Anda akan keluar dari akun ini",
     icon: "warning",
     showCancelButton: true,
+    confirmButtonColor: "#006a4e",
     confirmButtonText: "Ya, Logout!",
     cancelButtonText: "Batal",
   }).then((result) => {
@@ -83,7 +84,7 @@ const emit = defineEmits(["close"]);
     <div class="p-4 border-t border-gray-700">
       <button
         @click="confirmLogout"
-        class="w-full flex items-center p-2 space-x-3 rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
+        class="w-full flex items-center p-2 bg-red-500 space-x-3 rounded-lg hover:bg-red-800 transition-colors cursor-pointer"
       >
         <LogOut :size="20" />
         <span>Logout</span>

@@ -18,9 +18,7 @@ const showConfirmPassword = ref(false);
 
 <template>
   <Modal :isOpen="isOpen" @close="$emit('close')">
-    <template #header>{{
-      isEditMode ? "Edit Data Warga" : "Buat Data Warga Baru"
-    }}</template>
+    <template #header>{{ isEditMode ? "Edit " : "Buat" }} Data Warga</template>
     <template #body>
       <form
         @submit.prevent="$emit('save')"
@@ -47,6 +45,7 @@ const showConfirmPassword = ref(false);
               "
               type="text"
               id="name"
+              :placeholder="'Masukkan nama' + (isEditMode ? ' baru' : '')"
               autocomplete="name"
               required
               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
@@ -74,10 +73,11 @@ const showConfirmPassword = ref(false);
               "
               type="email"
               id="email"
+              :placeholder="'Masukkan email' + (isEditMode ? ' baru' : '')"
               autocomplete="email"
               :disabled="isEditMode"
               :required="!isEditMode"
-              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm disabled:bg-gray-100 focus:outline-none focus:ring-primary focus:border-primary"
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm disabled:bg-gray-100 focus:outline-none focus:ring-primary focus:border-primary disabled:cursor-not-allowed"
             />
           </div>
         </div>
@@ -103,7 +103,9 @@ const showConfirmPassword = ref(false);
               :type="showPassword ? 'text' : 'password'"
               id="password"
               :placeholder="
-                isEditMode ? 'Biarkan kosong untuk tidak mengubah' : ''
+                isEditMode
+                  ? 'Biarkan kosong jika tidak ingin mengubah'
+                  : 'Masukkan password'
               "
               :required="!isEditMode"
               class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
@@ -142,7 +144,9 @@ const showConfirmPassword = ref(false);
               :type="showConfirmPassword ? 'text' : 'password'"
               id="confirmPassword"
               :placeholder="
-                isEditMode ? 'Biarkan kosong untuk tidak mengubah' : ''
+                isEditMode
+                  ? 'Biarkan kosong jika tidak ingin mengubah'
+                  : 'Masukkan konfirmasi password'
               "
               :required="!isEditMode && residentForm.password"
               class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
