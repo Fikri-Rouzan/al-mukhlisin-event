@@ -46,10 +46,6 @@ export function useAuth() {
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
       });
 
       user.value = null;
@@ -58,8 +54,11 @@ export function useAuth() {
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Logout Gagal",
+        title: "Logout Gagal!",
         text: error.message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
       });
     }
   };
