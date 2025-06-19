@@ -9,7 +9,13 @@ const residents = ref([]);
 const loading = ref(true);
 const isModalOpen = ref(false);
 const isEditMode = ref(false);
-const residentForm = ref({ id: null, name: "", email: "", password: "" });
+const residentForm = ref({
+  id: null,
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+});
 const isSaving = ref(false);
 
 async function fetchResidents() {
@@ -19,7 +25,7 @@ async function fetchResidents() {
     if (error) throw error;
     residents.value = data;
   } catch (error) {
-    Swal.fire("Error", `Failed to fetch residents: ${error.message}`, "error");
+    Swal.fire("Error", `Gagal mengambil data warga: ${error.message}`, "error");
   } finally {
     loading.value = false;
   }
@@ -27,12 +33,18 @@ async function fetchResidents() {
 
 function openCreateModal() {
   isEditMode.value = false;
-  residentForm.value = { id: null, name: "", email: "", password: "" };
+  residentForm.value = {
+    id: null,
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
   isModalOpen.value = true;
 }
 function openEditModal(resident) {
   isEditMode.value = true;
-  residentForm.value = { ...resident, password: "" };
+  residentForm.value = { ...resident, password: "", confirmPassword: "" };
   isModalOpen.value = true;
 }
 function closeModal() {
@@ -40,6 +52,17 @@ function closeModal() {
 }
 
 async function handleSaveResident() {
+  if (residentForm.value.password || !isEditMode.value) {
+    if (residentForm.value.password !== residentForm.value.confirmPassword) {
+      Swal.fire(
+        "Error",
+        "Password tidak cocok dengan konfirmasi password",
+        "error"
+      );
+      return;
+    }
+  }
+
   isSaving.value = true;
   try {
     let response;
@@ -65,8 +88,8 @@ async function handleSaveResident() {
 
     if (response.error) throw response.error;
     Swal.fire(
-      "Success",
-      `Resident ${isEditMode.value ? "updated" : "created"} successfully!`,
+      "Sukses",
+      `Data warga berhasil ${isEditMode.value ? "diupdate" : "ditambahkan"}`,
       "success"
     );
     closeModal();
@@ -80,13 +103,13 @@ async function handleSaveResident() {
 
 async function handleDeleteResident(resident) {
   const { isConfirmed } = await Swal.fire({
-    title: "Are you sure?",
-    text: `You are about to delete ${resident.name}. You won't be able to revert this!`,
+    title: "Apa Anda Yakin?",
+    text: `Anda akan menghapus ${resident.name}. Anda tidak akan dapat mengembalikannya!`,
     icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete it!",
+    confirmButtonColor: "#fb2c36",
+    confirmButtonText: "Ya, hapus!",
+    cancelButtonText: "Tidak, batalkan!",
   });
 
   if (isConfirmed) {
@@ -96,7 +119,7 @@ async function handleDeleteResident(resident) {
         body: { id: resident.id },
       });
       if (error) throw error;
-      Swal.fire("Deleted!", "The resident has been deleted.", "success");
+      Swal.fire("Terhapus!", "Data warga berhasil dihapus", "success");
       fetchResidents();
     } catch (error) {
       Swal.fire("Error", error.message, "error");
@@ -114,12 +137,12 @@ onMounted(() => {
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"
     >
-      <h1 class="text-3xl font-bold">Data Resident</h1>
+      <h1 class="text-3xl font-bold">Data Warga</h1>
       <button
         @click="openCreateModal"
-        class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto"
+        class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
       >
-        Create New Resident
+        Tambah Data Warga
       </button>
     </div>
 
@@ -130,9 +153,9 @@ onMounted(() => {
             <tr
               class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              <th scope="col" class="px-6 py-3">Name</th>
+              <th scope="col" class="px-6 py-3">Nama</th>
               <th scope="col" class="px-6 py-3">Email</th>
-              <th scope="col" class="px-6 py-3 text-right">Actions</th>
+              <th scope="col" class="px-6 py-3 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -141,26 +164,26 @@ onMounted(() => {
             </tr>
             <tr v-else-if="residents.length === 0">
               <td colspan="3" class="px-6 py-4 text-center">
-                No residents found.
+                Tidak ada data warga yang ditemukan
               </td>
             </tr>
             <tr
               v-for="resident in residents"
               :key="resident.id"
-              class="hover:bg-gray-50"
+              class="hover:bg-gray-50 transition-colors"
             >
               <td class="px-6 py-4">{{ resident.name }}</td>
               <td class="px-6 py-4">{{ resident.email }}</td>
               <td class="px-6 py-4 text-right">
                 <button
                   @click="openEditModal(resident)"
-                  class="text-indigo-600 hover:text-indigo-900 mr-4"
+                  class="text-indigo-500 hover:text-indigo-900 mr-4 cursor-pointer transition-colors"
                 >
                   <Pencil class="w-5 h-5" />
                 </button>
                 <button
                   @click="handleDeleteResident(resident)"
-                  class="text-red-600 hover:text-red-900"
+                  class="text-red-500 hover:text-red-900 cursor-pointer transition-colors"
                 >
                   <Trash2 class="w-5 h-5" />
                 </button>
