@@ -26,7 +26,7 @@ export function useAuth() {
         icon: "error",
         title: "Gagal Mengambil Profil Pengguna!",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
       });
       profile.value = null;
@@ -44,7 +44,7 @@ export function useAuth() {
         icon: "success",
         title: "Logout Berhasil!",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
       });
 
@@ -57,7 +57,7 @@ export function useAuth() {
         title: "Logout Gagal!",
         text: error.message,
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
       });
     }

@@ -37,7 +37,14 @@ async function fetchAllData() {
     allCommittee.value = committeeRes.data;
     allSpeakers.value = speakersRes.data;
   } catch (error) {
-    Swal.fire("Error", `Failed to fetch data: ${error.message}`, "error");
+    Swal.fire({
+      title: "Error!",
+      text: error.message,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
   } finally {
     loading.value = false;
   }
@@ -73,11 +80,14 @@ async function openEditModal(event) {
     p_event_id: event.id,
   });
   if (error) {
-    return Swal.fire(
-      "Error",
-      "Could not fetch event details for editing.",
-      "error"
-    );
+    return Swal.fire({
+      title: "Error!",
+      text: error.message,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
   }
 
   const eventDetails = data.details;
@@ -135,15 +145,29 @@ async function handleSave() {
     });
 
     if (error) throw error;
-    Swal.fire(
-      "Success",
-      `Event ${isEditMode.value ? "updated" : "created"}!`,
-      "success"
-    );
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      title: "Sukses!",
+      text: `Data kegiatan berhasil ${
+        isEditMode.value ? "diperbarui" : "ditambahkan"
+      }`,
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
     isModalOpen.value = false;
     fetchAllData();
   } catch (error) {
-    Swal.fire("Error", error.message, "error");
+    Swal.fire({
+      title: "Error!",
+      text: error.message,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
   } finally {
     isSaving.value = false;
   }
@@ -151,10 +175,13 @@ async function handleSave() {
 
 async function handleDelete(event) {
   const { isConfirmed } = await Swal.fire({
-    title: "Are you sure?",
-    text: `Delete ${event.name}?`,
+    title: "Apa Anda Yakin?",
+    text: `Anda akan menghapus ${event.name} dari data kegiatan`,
     icon: "warning",
     showCancelButton: true,
+    confirmButtonColor: "#fb2c36",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Tidak, Batalkan!",
   });
   if (isConfirmed) {
     try {
@@ -163,10 +190,26 @@ async function handleDelete(event) {
         body: { id: event.id, photo_url: event.photo_url },
       });
       if (error) throw error;
-      Swal.fire("Deleted!", "Event has been deleted.", "success");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        title: "Terhapus!",
+        text: `Data kegiatan ${event.name} berhasil dihapus`,
+        icon: "success",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
       fetchAllData();
     } catch (error) {
-      Swal.fire("Error", error.message, "error");
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
     }
   }
 }
@@ -182,9 +225,9 @@ onMounted(fetchAllData);
       <h1 class="text-3xl font-bold">Data Kegiatan</h1>
       <button
         @click="openCreateModal"
-        class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto"
+        class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
       >
-        Create New Event
+        Tambah Data Kegiatan
       </button>
     </div>
 
@@ -193,13 +236,13 @@ onMounted(fetchAllData);
         <table class="min-w-full whitespace-nowrap">
           <thead class="bg-gray-50">
             <tr
-              class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              class="text-left text-sm font-bold text-gray-500 uppercase tracking-wider bg-gray-200"
             >
-              <th class="px-6 py-3">Photo</th>
-              <th class="px-6 py-3">Name</th>
-              <th class="px-6 py-3">Category</th>
-              <th class="px-6 py-3">Date</th>
-              <th class="px-6 py-3 text-right">Actions</th>
+              <th class="px-6 py-3">Foto</th>
+              <th class="px-6 py-3">Nama</th>
+              <th class="px-6 py-3">Kategori</th>
+              <th class="px-6 py-3">Tanggal & Waktu</th>
+              <th class="px-6 py-3 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -208,13 +251,13 @@ onMounted(fetchAllData);
             </tr>
             <tr v-else-if="events.length === 0">
               <td colspan="5" class="px-6 py-4 text-center">
-                No events found.
+                Tidak ada data kegiatan yang ditemukan
               </td>
             </tr>
             <tr
               v-for="event in events"
               :key="event.id"
-              class="hover:bg-gray-50"
+              class="hover:bg-gray-50 transition-colors"
             >
               <td class="px-6 py-4">
                 <img
@@ -230,18 +273,18 @@ onMounted(fetchAllData);
               <td class="px-6 py-4 text-right">
                 <router-link
                   :to="`/admin/events/${event.id}`"
-                  class="text-green-600 hover:text-green-900 mr-4 inline-block align-middle"
+                  class="text-indigo-600 hover:text-indigo-900 mr-4 inline-block align-middle transition-colors"
                   ><Eye class="w-5 h-5"
                 /></router-link>
                 <button
                   @click="openEditModal(event)"
-                  class="text-indigo-600 hover:text-indigo-900 mr-4 inline-block align-middle"
+                  class="text-orange-500 hover:text-orange-900 mr-4 inline-block align-middle cursor-pointer transition-colors"
                 >
                   <Pencil class="w-5 h-5" />
                 </button>
                 <button
                   @click="handleDelete(event)"
-                  class="text-red-600 hover:text-red-900 inline-block align-middle"
+                  class="text-red-500 hover:text-red-900 inline-block align-middle cursor-pointer transition-colors"
                 >
                   <Trash2 class="w-5 h-5" />
                 </button>

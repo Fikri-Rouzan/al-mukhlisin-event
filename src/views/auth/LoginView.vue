@@ -35,7 +35,7 @@ const handleLogin = async () => {
       icon: "success",
       title: `Selamat Datang Kembali, ${profile.name || "Admin"}!`,
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
 
@@ -50,7 +50,7 @@ const handleLogin = async () => {
       title: "Login Gagal!",
       text: error.message,
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
   } finally {

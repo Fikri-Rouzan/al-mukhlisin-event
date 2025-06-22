@@ -28,7 +28,7 @@ const closeSidebar = () => {
     />
 
     <div class="flex-1 flex flex-col">
-      <header class="p-4 bg-white shadow-md md:hidden">
+      <header class="p-4 bg-white shadow-md md:hidden sticky top-0 z-10">
         <button @click="isSidebarOpen = true">
           <Menu class="w-6 h-6" />
         </button>

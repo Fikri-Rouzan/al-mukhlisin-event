@@ -25,8 +25,6 @@ const confirmLogout = () => {
     }
   });
 };
-
-const emit = defineEmits(["close"]);
 </script>
 
 <template>
@@ -50,7 +48,7 @@ const emit = defineEmits(["close"]);
       </button>
     </div>
 
-    <nav class="flex-1 p-4 space-y-2">
+    <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
       <RouterLink
         to="/admin/residents"
         @click="closeSidebar"

@@ -20,10 +20,10 @@ const handleRegister = async () => {
   if (!name.value || !email.value || !password.value) {
     Swal.fire({
       icon: "error",
-      title: "Error",
+      title: "Error!",
       text: "Semua field harus diisi",
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
     return;
@@ -31,10 +31,10 @@ const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
     Swal.fire({
       icon: "error",
-      title: "Error",
+      title: "Error!",
       text: "Password tidak cocok dengan konfirmasi password",
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
     return;
@@ -64,7 +64,7 @@ const handleRegister = async () => {
       title: "Registrasi Berhasil!",
       text: "Silakan login untuk melanjutkan",
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
     router.push("/login");
@@ -74,7 +74,7 @@ const handleRegister = async () => {
       title: "Registrasi Gagal!",
       text: error.message,
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
   } finally {

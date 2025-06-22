@@ -25,7 +25,14 @@ async function fetchResidents() {
     if (error) throw error;
     residents.value = data;
   } catch (error) {
-    Swal.fire("Error", `Gagal mengambil data warga: ${error.message}`, "error");
+    Swal.fire({
+      title: "Error!",
+      text: error.message,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
   } finally {
     loading.value = false;
   }
@@ -54,11 +61,14 @@ function closeModal() {
 async function handleSaveResident() {
   if (residentForm.value.password || !isEditMode.value) {
     if (residentForm.value.password !== residentForm.value.confirmPassword) {
-      Swal.fire(
-        "Error",
-        "Password tidak cocok dengan konfirmasi password",
-        "error"
-      );
+      Swal.fire({
+        title: "Error!",
+        text: "Password tidak cocok dengan konfirmasi password",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
       return;
     }
   }
@@ -87,15 +97,29 @@ async function handleSaveResident() {
     }
 
     if (response.error) throw response.error;
-    Swal.fire(
-      "Sukses",
-      `Data warga berhasil ${isEditMode.value ? "diupdate" : "ditambahkan"}`,
-      "success"
-    );
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      title: "Sukses!",
+      text: `Data warga berhasil ${
+        isEditMode.value ? "diperbarui" : "ditambahkan"
+      }`,
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
     closeModal();
     fetchResidents();
   } catch (error) {
-    Swal.fire("Error", error.message, "error");
+    Swal.fire({
+      title: "Error!",
+      text: error.message,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
   } finally {
     isSaving.value = false;
   }
@@ -104,12 +128,12 @@ async function handleSaveResident() {
 async function handleDeleteResident(resident) {
   const { isConfirmed } = await Swal.fire({
     title: "Apa Anda Yakin?",
-    text: `Anda akan menghapus ${resident.name}. Anda tidak akan dapat mengembalikannya!`,
+    text: `Anda akan menghapus ${resident.name} dari data warga`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#fb2c36",
-    confirmButtonText: "Ya, hapus!",
-    cancelButtonText: "Tidak, batalkan!",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Tidak, Batalkan!",
   });
 
   if (isConfirmed) {
@@ -119,10 +143,26 @@ async function handleDeleteResident(resident) {
         body: { id: resident.id },
       });
       if (error) throw error;
-      Swal.fire("Terhapus!", "Data warga berhasil dihapus", "success");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        title: "Terhapus!",
+        text: `Data warga ${resident.name} berhasil dihapus`,
+        icon: "success",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
       fetchResidents();
     } catch (error) {
-      Swal.fire("Error", error.message, "error");
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
     }
   }
 }
@@ -151,7 +191,7 @@ onMounted(() => {
         <table class="min-w-full whitespace-nowrap">
           <thead class="bg-gray-50">
             <tr
-              class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              class="text-left text-sm font-bold text-gray-500 uppercase tracking-wider bg-gray-200"
             >
               <th scope="col" class="px-6 py-3">Nama</th>
               <th scope="col" class="px-6 py-3">Email</th>
@@ -177,7 +217,7 @@ onMounted(() => {
               <td class="px-6 py-4 text-right">
                 <button
                   @click="openEditModal(resident)"
-                  class="text-indigo-500 hover:text-indigo-900 mr-4 cursor-pointer transition-colors"
+                  class="text-orange-500 hover:text-orange-900 mr-4 cursor-pointer transition-colors"
                 >
                   <Pencil class="w-5 h-5" />
                 </button>

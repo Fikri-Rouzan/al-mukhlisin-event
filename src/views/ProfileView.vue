@@ -45,10 +45,10 @@ async function handleUpdateProfile(formData) {
   ) {
     return Swal.fire({
       icon: "error",
-      title: "Error",
+      title: "Error!",
       text: "Password tidak cocok dengan konfirmasi password",
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
   }
@@ -78,17 +78,17 @@ async function handleUpdateProfile(formData) {
       title: "Sukses!",
       text: "Profil berhasil diperbarui",
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
     isModalOpen.value = false;
   } catch (error) {
     Swal.fire({
       icon: "error",
-      title: "Error",
+      title: "Error!",
       text: error.message,
       showConfirmButton: false,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
     });
   } finally {
