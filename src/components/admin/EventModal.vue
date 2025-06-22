@@ -2,7 +2,7 @@
 import Modal from "../Modal.vue";
 import VueMultiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
-import { Type, Tag, CalendarClock, FileText } from "lucide-vue-next";
+import { Type, Tag, CalendarClock, FileText, Image } from "lucide-vue-next";
 
 defineProps({
   isOpen: Boolean,
@@ -10,7 +10,6 @@ defineProps({
   eventForm: Object,
   isSaving: Boolean,
   photoPreview: String,
-  defaultAvatar: String,
   allCommittee: Array,
   allSpeakers: Array,
 });
@@ -32,11 +31,17 @@ function handleFileChange(event) {
         <div>
           <p class="block text-sm font-medium text-gray-700">Foto</p>
           <div class="mt-1 flex items-center space-x-4">
-            <img
-              :src="photoPreview || defaultAvatar"
-              alt="Preview"
-              class="w-20 h-20 rounded object-cover bg-gray-100"
-            />
+            <div
+              class="w-20 h-20 flex-shrink-0 flex items-center justify-center bg-gray-100 rounded"
+            >
+              <img
+                v-if="photoPreview"
+                :src="photoPreview"
+                alt="Preview"
+                class="w-full h-full rounded object-cover"
+              />
+              <Image v-else class="w-10 h-10 text-gray-400" />
+            </div>
             <input
               type="file"
               @change="handleFileChange"

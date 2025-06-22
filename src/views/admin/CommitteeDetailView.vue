@@ -3,14 +3,12 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
-import { ArrowLeft } from "lucide-vue-next";
+import { ArrowLeft, UserCircle2 } from "lucide-vue-next";
 
 const route = useRoute();
 const router = useRouter();
 const member = ref(null);
 const loading = ref(true);
-
-const defaultAvatar = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle-2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>`;
 
 onMounted(async () => {
   try {
@@ -50,18 +48,22 @@ onMounted(async () => {
 
     <div v-if="loading" class="text-center py-10">Loading...</div>
     <div v-else-if="!member" class="text-center py-10">
-      Data panitia tidak ditemukan
+      Data panitia tidak ditemukan.
     </div>
 
     <div v-else class="bg-white p-6 sm:p-8 rounded-lg shadow-md">
       <div
         class="flex flex-col items-center md:flex-row md:items-start md:space-x-8"
       >
-        <img
-          :src="member.photo_url || defaultAvatar"
-          alt="Photo"
-          class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-gray-100 mb-6 md:mb-0 flex-shrink-0"
-        />
+        <div class="w-32 h-32 md:w-40 md:h-40 mb-6 md:mb-0 flex-shrink-0">
+          <img
+            v-if="member.photo_url"
+            :src="member.photo_url"
+            alt="Photo"
+            class="w-full h-full rounded-full object-cover border-4 border-gray-100"
+          />
+          <UserCircle2 v-else class="w-full h-full text-gray-300" />
+        </div>
 
         <div class="w-full text-center md:text-left">
           <div class="space-y-6">

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { supabase } from "../../lib/supabase";
-import { Pencil, Trash2, Eye } from "lucide-vue-next";
+import { Pencil, Trash2, Eye, UserCircle2 } from "lucide-vue-next";
 import Swal from "sweetalert2";
 import SpeakersModal from "../../components/admin/SpeakersModal.vue";
 
@@ -19,8 +19,6 @@ const speakerForm = ref({
 });
 const newPhotoFile = ref(null);
 const photoPreview = ref(null);
-
-const defaultAvatar = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle-2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>`;
 
 async function fetchSpeakers() {
   try {
@@ -225,10 +223,12 @@ onMounted(fetchSpeakers);
             >
               <td class="px-6 py-4">
                 <img
-                  :src="speaker.photo_url || defaultAvatar"
+                  v-if="speaker.photo_url"
+                  :src="speaker.photo_url"
                   alt="Photo"
-                  class="w-10 h-10 rounded-full object-cover text-gray-300"
+                  class="w-10 h-10 rounded-full object-cover"
                 />
+                <UserCircle2 v-else class="w-10 h-10 text-gray-400" />
               </td>
               <td class="px-6 py-4">{{ speaker.name }}</td>
               <td class="px-6 py-4">{{ speaker.phone_number }}</td>
@@ -264,7 +264,6 @@ onMounted(fetchSpeakers);
       :speakerForm="speakerForm"
       :isSaving="isSaving"
       :photoPreview="photoPreview"
-      :defaultAvatar="defaultAvatar"
       @close="isModalOpen = false"
       @save="handleSave"
       @fileChange="onFileChange"

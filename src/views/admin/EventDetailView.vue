@@ -3,13 +3,12 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
-import { ArrowLeft } from "lucide-vue-next";
+import { ArrowLeft, Image, UserCircle2 } from "lucide-vue-next";
 
 const route = useRoute();
 const router = useRouter();
 const event = ref(null);
 const loading = ref(true);
-const defaultAvatar = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle-2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>`;
 
 onMounted(async () => {
   try {
@@ -49,14 +48,20 @@ onMounted(async () => {
     </div>
 
     <div v-else class="bg-white p-6 md:p-8 rounded-lg shadow-md">
-      <img
-        :src="event.details.photo_url || defaultAvatar"
-        class="w-full h-full object-cover rounded-lg mb-8 bg-gray-100 text-gray-300"
-        alt="Event Photo"
-      />
+      <div
+        class="w-full h-64 flex items-center justify-center bg-gray-100 rounded-lg mb-8"
+      >
+        <img
+          v-if="event.details.photo_url"
+          :src="event.details.photo_url"
+          class="w-full h-full object-cover rounded-lg"
+          alt="Event Photo"
+        />
+        <Image v-else class="w-16 h-16 text-gray-400" />
+      </div>
 
-      <div class="space-y-6 text-center">
-        <div>
+      <div class="space-y-6">
+        <div class="text-center">
           <p class="text-3xl sm:text-4xl font-bold text-primary">
             {{ event.details.name }}
           </p>
@@ -111,10 +116,12 @@ onMounted(async () => {
               class="flex items-center space-x-3"
             >
               <img
-                :src="speaker.photo_url || defaultAvatar"
-                class="w-11 h-11 rounded-full object-cover text-gray-300"
+                v-if="speaker.photo_url"
+                :src="speaker.photo_url"
+                class="w-11 h-11 rounded-full object-cover"
                 alt="Speaker Photo"
               />
+              <UserCircle2 v-else class="w-11 h-11 text-gray-400" />
               <span>{{ speaker.name }}</span>
             </li>
           </ul>
@@ -132,10 +139,12 @@ onMounted(async () => {
               class="flex items-center space-x-3"
             >
               <img
-                :src="c.photo_url || defaultAvatar"
-                class="w-11 h-11 rounded-full object-cover text-gray-300"
+                v-if="c.photo_url"
+                :src="c.photo_url"
+                class="w-11 h-11 rounded-full object-cover"
                 alt="Committee Photo"
               />
+              <UserCircle2 v-else class="w-11 h-11 text-gray-400" />
               <span>{{ c.name }} ({{ c.position }})</span>
             </li>
           </ul>

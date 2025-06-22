@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { supabase } from "../../lib/supabase";
-import { Pencil, Trash2, Eye } from "lucide-vue-next";
+import { Pencil, Trash2, Eye, UserCircle2 } from "lucide-vue-next";
 import Swal from "sweetalert2";
 import CommitteeModal from "../../components/admin/CommitteeModal.vue";
 
@@ -20,8 +20,6 @@ const committeeForm = ref({
 });
 const newPhotoFile = ref(null);
 const photoPreview = ref(null);
-
-const defaultAvatar = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle-2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>`;
 
 async function fetchCommitteeMembers() {
   try {
@@ -213,10 +211,10 @@ onMounted(fetchCommitteeMembers);
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-if="loading">
-              <td colspan="4" class="px-6 py-4 text-center">Loading...</td>
+              <td colspan="5" class="px-6 py-4 text-center">Loading...</td>
             </tr>
             <tr v-else-if="committeeMembers.length === 0">
-              <td colspan="4" class="px-6 py-4 text-center">
+              <td colspan="5" class="px-6 py-4 text-center">
                 Tidak ada data panitia yang ditemukan
               </td>
             </tr>
@@ -227,10 +225,12 @@ onMounted(fetchCommitteeMembers);
             >
               <td class="px-6 py-4">
                 <img
-                  :src="member.photo_url || defaultAvatar"
+                  v-if="member.photo_url"
+                  :src="member.photo_url"
                   alt="Photo"
-                  class="w-10 h-10 rounded-full object-cover text-gray-300"
+                  class="w-10 h-10 rounded-full object-cover"
                 />
+                <UserCircle2 v-else class="w-10 h-10 text-gray-400" />
               </td>
               <td class="px-6 py-4">{{ member.name }}</td>
               <td class="px-6 py-4">{{ member.position }}</td>
@@ -267,7 +267,6 @@ onMounted(fetchCommitteeMembers);
       :committeeForm="committeeForm"
       :isSaving="isSaving"
       :photoPreview="photoPreview"
-      :defaultAvatar="defaultAvatar"
       @close="isModalOpen = false"
       @save="handleSave"
       @fileChange="onFileChange"

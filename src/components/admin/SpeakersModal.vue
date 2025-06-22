@@ -1,6 +1,6 @@
 <script setup>
 import Modal from "../Modal.vue";
-import { User, Phone, MapPin } from "lucide-vue-next";
+import { User, Phone, MapPin, UserCircle2 } from "lucide-vue-next";
 
 defineProps({
   isOpen: Boolean,
@@ -8,7 +8,6 @@ defineProps({
   speakerForm: Object,
   isSaving: Boolean,
   photoPreview: String,
-  defaultAvatar: String,
 });
 
 const emit = defineEmits(["close", "save", "fileChange", "update:speakerForm"]);
@@ -28,11 +27,15 @@ function handleFileChange(event) {
         <div>
           <p class="block text-sm font-medium text-gray-700">Foto</p>
           <div class="mt-1 flex items-center space-x-4">
-            <img
-              :src="photoPreview || defaultAvatar"
-              alt="Preview"
-              class="w-20 h-20 rounded-full object-cover bg-gray-100"
-            />
+            <div class="w-20 h-20 flex-shrink-0">
+              <img
+                v-if="photoPreview"
+                :src="photoPreview"
+                alt="Preview"
+                class="w-full h-full rounded-full object-cover"
+              />
+              <UserCircle2 v-else class="w-full h-full text-gray-300" />
+            </div>
             <input
               type="file"
               @change="handleFileChange"

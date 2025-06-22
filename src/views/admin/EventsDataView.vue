@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { supabase } from "../../lib/supabase";
-import { Pencil, Trash2, Eye } from "lucide-vue-next";
+import { Pencil, Trash2, Eye, Image } from "lucide-vue-next";
 import Swal from "sweetalert2";
 import EventModal from "../../components/admin/EventModal.vue";
 
@@ -15,8 +15,6 @@ const isSaving = ref(false);
 const eventForm = ref({});
 const newPhotoFile = ref(null);
 const photoPreview = ref(null);
-
-const defaultAvatar = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle-2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>`;
 
 async function fetchAllData() {
   try {
@@ -260,15 +258,27 @@ onMounted(fetchAllData);
               class="hover:bg-gray-50 transition-colors"
             >
               <td class="px-6 py-4">
-                <img
-                  :src="event.photo_url || defaultAvatar"
-                  class="w-16 h-10 object-cover rounded text-gray-300"
-                />
+                <div
+                  class="w-16 h-10 flex items-center justify-center bg-gray-100 rounded"
+                >
+                  <img
+                    v-if="event.photo_url"
+                    :src="event.photo_url"
+                    alt="Event Photo"
+                    class="w-full h-full object-cover rounded"
+                  />
+                  <Image v-else class="w-6 h-6 text-gray-400" />
+                </div>
               </td>
               <td class="px-6 py-4 font-medium">{{ event.name }}</td>
               <td class="px-6 py-4">{{ event.category }}</td>
               <td class="px-6 py-4">
-                {{ new Date(event.event_date).toLocaleString("id-ID") }}
+                {{
+                  new Date(event.event_date).toLocaleString("id-ID", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })
+                }}
               </td>
               <td class="px-6 py-4 text-right">
                 <router-link
@@ -301,7 +311,6 @@ onMounted(fetchAllData);
       :eventForm="eventForm"
       :isSaving="isSaving"
       :photoPreview="photoPreview"
-      :defaultAvatar="defaultAvatar"
       :allCommittee="allCommittee"
       :allSpeakers="allSpeakers"
       @close="isModalOpen = false"
