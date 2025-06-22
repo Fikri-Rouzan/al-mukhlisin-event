@@ -1,5 +1,18 @@
-# Vue 3 + Vite
+# Al Mukhlisin Event
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## About Al Mukhlisin Event
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Features
+
+## Technologies Used
+
+- Programming Language: JavaScript.
+- Markup Language: HTML.
+- Stylesheet Language: CSS.
+- Frameworks: Vue and Tailwind CSS.
+- Libraries: supabase-js, dotenv, Lucide Vue Next, SweetAlert2, Vue Router, and vue-multiselect.
+- Database: PostgreSQL.
+- Backend as a Service: Supabase.
+- Tool: Vite.
+- Software: Visual Studio Code.
+- Deployment: Netlify.
