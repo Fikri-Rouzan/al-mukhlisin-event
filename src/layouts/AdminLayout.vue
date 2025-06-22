@@ -14,7 +14,7 @@ const closeSidebar = () => {
 </script>
 
 <template>
-  <div class="relative min-h-screen md:flex">
+  <div class="relative min-h-screen bg-gray-50">
     <div
       v-if="isSidebarOpen"
       @click="closeSidebar"
@@ -27,7 +27,7 @@ const closeSidebar = () => {
       :close-sidebar="closeSidebar"
     />
 
-    <div class="flex-1 flex flex-col">
+    <div class="flex flex-col md:ml-64">
       <header class="p-4 bg-white shadow-md md:hidden sticky top-0 z-10">
         <button @click="isSidebarOpen = true">
           <Menu class="w-6 h-6" />

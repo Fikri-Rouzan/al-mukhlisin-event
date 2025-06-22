@@ -17,3 +17,7 @@
 .admin-nav-item.router-link-exact-active {
   @apply bg-secondary;
 }
+
+html {
+  scroll-behavior: smooth;
+}

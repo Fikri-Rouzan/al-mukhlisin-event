@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
+import { ArrowLeft } from "lucide-vue-next";
 
 const route = useRoute();
 const router = useRouter();
@@ -23,7 +24,14 @@ onMounted(async () => {
     if (error) throw error;
     member.value = data;
   } catch (error) {
-    Swal.fire("Error", "Failed to fetch committee member details.", "error");
+    Swal.fire({
+      title: "Error!",
+      text: error.message,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
   } finally {
     loading.value = false;
   }
@@ -34,38 +42,64 @@ onMounted(async () => {
   <div>
     <button
       @click="router.back()"
-      class="mb-6 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+      class="mb-6 inline-flex items-center space-x-2 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 cursor-pointer transition-colors"
     >
-      &larr; Back to List
+      <ArrowLeft :size="20" />
+      <span>Kembali</span>
     </button>
 
-    <div v-if="loading" class="text-center">Loading...</div>
-    <div v-else-if="!member" class="text-center">Member not found.</div>
-    <div v-else class="bg-white p-8 rounded-lg shadow-md">
+    <div v-if="loading" class="text-center py-10">Loading...</div>
+    <div v-else-if="!member" class="text-center py-10">
+      Data panitia tidak ditemukan
+    </div>
+
+    <div v-else class="bg-white p-6 sm:p-8 rounded-lg shadow-md">
       <div
-        class="flex flex-col md:flex-row items-center md:items-start md:space-x-8"
+        class="flex flex-col items-center md:flex-row md:items-start md:space-x-8"
       >
         <img
           :src="member.photo_url || defaultAvatar"
           alt="Photo"
-          class="w-40 h-40 rounded-full object-cover border-4 border-gray-100 mb-6 md:mb-0"
+          class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-gray-100 mb-6 md:mb-0 flex-shrink-0"
         />
-        <div class="w-full">
-          <h1 class="text-4xl font-bold text-primary">{{ member.name }}</h1>
-          <p class="text-xl text-gray-600 mt-1">{{ member.position }}</p>
 
-          <div class="mt-8 space-y-4">
+        <div class="w-full text-center md:text-left">
+          <div class="space-y-6">
             <div>
-              <h3 class="font-semibold text-gray-500 uppercase text-sm">
-                Phone Number
+              <p class="text-2xl sm:text-3xl font-bold text-primary">
+                {{ member.name }}
+              </p>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="text-left space-y-1">
+              <h3
+                class="font-bold text-gray-500 uppercase text-base tracking-wider"
+              >
+                Posisi
+              </h3>
+              <p class="text-lg text-gray-800">
+                {{ member.position }}
+              </p>
+            </div>
+
+            <div class="text-left space-y-1">
+              <h3
+                class="font-bold text-gray-500 uppercase text-base tracking-wider"
+              >
+                Nomor Telepon
               </h3>
               <p class="text-lg text-gray-800">
                 {{ member.phone_number || "-" }}
               </p>
             </div>
-            <div>
-              <h3 class="font-semibold text-gray-500 uppercase text-sm">
-                Address
+
+            <div class="text-left space-y-1">
+              <h3
+                class="font-bold text-gray-500 uppercase text-base tracking-wider"
+              >
+                Alamat
               </h3>
               <p class="text-lg text-gray-800 whitespace-pre-wrap">
                 {{ member.address || "-" }}

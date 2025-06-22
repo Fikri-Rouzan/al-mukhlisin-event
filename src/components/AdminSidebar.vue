@@ -32,7 +32,7 @@ const confirmLogout = () => {
     :class="[
       'fixed inset-y-0 left-0 z-30 w-64 bg-primary text-white flex flex-col transform transition-transform duration-300 ease-in-out',
       isOpen ? 'translate-x-0' : '-translate-x-full',
-      'md:relative md:translate-x-0',
+      'md:translate-x-0',
     ]"
   >
     <div class="p-4 border-b border-gray-700 flex justify-between items-center">

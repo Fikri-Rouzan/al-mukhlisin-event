@@ -207,6 +207,7 @@ onMounted(fetchCommitteeMembers);
               <th class="px-6 py-3">Foto</th>
               <th class="px-6 py-3">Nama</th>
               <th class="px-6 py-3">Posisi</th>
+              <th class="px-6 py-3">Nomor Telepon</th>
               <th class="px-6 py-3 text-right">Aksi</th>
             </tr>
           </thead>
@@ -233,6 +234,7 @@ onMounted(fetchCommitteeMembers);
               </td>
               <td class="px-6 py-4">{{ member.name }}</td>
               <td class="px-6 py-4">{{ member.position }}</td>
+              <td class="px-6 py-4">{{ member.phone_number }}</td>
               <td class="px-6 py-4 text-right">
                 <router-link
                   :to="`/admin/committee/${member.id}`"
