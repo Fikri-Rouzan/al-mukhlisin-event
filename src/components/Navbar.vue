@@ -50,7 +50,7 @@ const closeMenu = () => {
           class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors"
         >
           <User :size="18" />
-          <span>Profile</span>
+          <span>Profil</span>
         </RouterLink>
         <RouterLink
           v-if="!user"
