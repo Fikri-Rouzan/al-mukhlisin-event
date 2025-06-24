@@ -1,183 +1,41 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { supabase } from "../../lib/supabase";
+import { onMounted } from "vue";
+import { useCrud } from "../../composables/useCrud";
 import { Pencil, Trash2, Eye, UserCircle2 } from "lucide-vue-next";
-import Swal from "sweetalert2";
 import SpeakersModal from "../../components/admin/SpeakersModal.vue";
 
-const speakers = ref([]);
-const loading = ref(true);
-const isModalOpen = ref(false);
-const isEditMode = ref(false);
-const isSaving = ref(false);
-const speakerForm = ref({
+const config = {
+  tableName: "speakers",
+  singularName: "narasumber",
+  supabaseFunction: "manage-speaker",
+  storageName: "speaker-photos",
+};
+
+const {
+  items,
+  loading,
+  isModalOpen,
+  isEditMode,
+  isSaving,
+  form,
+  photoPreview,
+  fetchItems,
+  saveItem,
+  deleteItem,
+  openModal,
+  openEditModal,
+  handleFileChange,
+} = useCrud(config);
+
+onMounted(fetchItems);
+
+const initialFormData = {
   id: null,
   name: "",
   photo_url: "",
   phone_number: "",
   address: "",
-});
-const newPhotoFile = ref(null);
-const photoPreview = ref(null);
-
-async function fetchSpeakers() {
-  try {
-    loading.value = true;
-    const { data, error } = await supabase
-      .from("speakers")
-      .select("*")
-      .order("name");
-    if (error) throw error;
-    speakers.value = data;
-  } catch (error) {
-    Swal.fire({
-      title: "Error!",
-      text: error.message,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-  } finally {
-    loading.value = false;
-  }
-}
-
-function onFileChange(event) {
-  const file = event.target.files[0];
-  if (file) {
-    newPhotoFile.value = file;
-    photoPreview.value = URL.createObjectURL(file);
-  }
-}
-
-function openCreateModal() {
-  isEditMode.value = false;
-  speakerForm.value = {
-    id: null,
-    name: "",
-    photo_url: "",
-    phone_number: "",
-    address: "",
-  };
-  newPhotoFile.value = null;
-  photoPreview.value = null;
-  isModalOpen.value = true;
-}
-
-function openEditModal(speaker) {
-  isEditMode.value = true;
-  speakerForm.value = { ...speaker };
-  newPhotoFile.value = null;
-  photoPreview.value = speaker.photo_url;
-  isModalOpen.value = true;
-}
-
-async function handleSave() {
-  isSaving.value = true;
-  let finalPhotoUrl = speakerForm.value.photo_url;
-
-  try {
-    if (newPhotoFile.value) {
-      if (isEditMode.value && speakerForm.value.photo_url) {
-        const oldFilePath = new URL(speakerForm.value.photo_url).pathname
-          .split("speaker-photos/")
-          .pop();
-        await supabase.storage.from("speaker-photos").remove([oldFilePath]);
-      }
-
-      const fileName = `${Date.now()}-${newPhotoFile.value.name}`;
-
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("speaker-photos")
-        .upload(fileName, newPhotoFile.value);
-
-      if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage
-        .from("speaker-photos")
-        .getPublicUrl(uploadData.path);
-      finalPhotoUrl = urlData.publicUrl;
-    }
-
-    const payload = { ...speakerForm.value, photo_url: finalPhotoUrl };
-    const response = await supabase.functions.invoke("manage-speaker", {
-      method: isEditMode.value ? "PATCH" : "POST",
-      body: payload,
-    });
-
-    if (response.error) throw response.error;
-
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      title: "Sukses!",
-      text: `Data narasumber berhasil ${
-        isEditMode.value ? "diperbarui" : "ditambahkan"
-      }`,
-      icon: "success",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-    isModalOpen.value = false;
-    fetchSpeakers();
-  } catch (error) {
-    Swal.fire({
-      title: "Error!",
-      text: error.message,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-  } finally {
-    isSaving.value = false;
-  }
-}
-
-async function handleDelete(speaker) {
-  const { isConfirmed } = await Swal.fire({
-    title: "Apa Anda Yakin?",
-    text: `Anda akan menghapus ${speaker.name} dari data narasumber`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#fb2c36",
-    confirmButtonText: "Ya, Hapus!",
-    cancelButtonText: "Tidak, Batalkan!",
-  });
-  if (isConfirmed) {
-    try {
-      const { error } = await supabase.functions.invoke("manage-speaker", {
-        method: "DELETE",
-        body: { id: speaker.id, photo_url: speaker.photo_url },
-      });
-      if (error) throw error;
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        title: "Terhapus!",
-        text: `Data narasumber ${speaker.name} berhasil dihapus`,
-        icon: "success",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-      fetchSpeakers();
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: error.message,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-    }
-  }
-}
-
-onMounted(fetchSpeakers);
+};
 </script>
 
 <template>
@@ -187,7 +45,7 @@ onMounted(fetchSpeakers);
     >
       <h1 class="text-3xl font-bold">Data Narasumber</h1>
       <button
-        @click="openCreateModal"
+        @click="openModal(initialFormData)"
         class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
       >
         Tambah Data Narasumber
@@ -211,13 +69,13 @@ onMounted(fetchSpeakers);
             <tr v-if="loading">
               <td colspan="4" class="px-6 py-4 text-center">Loading...</td>
             </tr>
-            <tr v-else-if="speakers.length === 0">
+            <tr v-else-if="items.length === 0">
               <td colspan="4" class="px-6 py-4 text-center">
                 Tidak ada data narasumber yang ditemukan
               </td>
             </tr>
             <tr
-              v-for="speaker in speakers"
+              v-for="speaker in items"
               :key="speaker.id"
               class="hover:bg-gray-50 transition-colors"
             >
@@ -246,7 +104,7 @@ onMounted(fetchSpeakers);
                   <Pencil class="w-5 h-5" />
                 </button>
                 <button
-                  @click="handleDelete(speaker)"
+                  @click="deleteItem(speaker)"
                   class="text-red-500 hover:text-red-900 inline-block align-middle cursor-pointer transition-colors"
                 >
                   <Trash2 class="w-5 h-5" />
@@ -261,13 +119,13 @@ onMounted(fetchSpeakers);
     <SpeakersModal
       :isOpen="isModalOpen"
       :isEditMode="isEditMode"
-      :speakerForm="speakerForm"
+      :speakerForm="form.data"
       :isSaving="isSaving"
       :photoPreview="photoPreview"
       @close="isModalOpen = false"
-      @save="handleSave"
-      @fileChange="onFileChange"
-      @update:speakerForm="speakerForm = $event"
+      @save="saveItem"
+      @fileChange="handleFileChange"
+      @update:speakerForm="(payload) => (form.data = payload)"
     />
   </div>
 </template>

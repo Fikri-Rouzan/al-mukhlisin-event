@@ -1,184 +1,42 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { supabase } from "../../lib/supabase";
+import { onMounted } from "vue";
+import { useCrud } from "../../composables/useCrud";
 import { Pencil, Trash2, Eye, UserCircle2 } from "lucide-vue-next";
-import Swal from "sweetalert2";
 import CommitteeModal from "../../components/admin/CommitteeModal.vue";
 
-const committeeMembers = ref([]);
-const loading = ref(true);
-const isModalOpen = ref(false);
-const isEditMode = ref(false);
-const isSaving = ref(false);
-const committeeForm = ref({
+const config = {
+  tableName: "committee_members",
+  singularName: "panitia",
+  supabaseFunction: "manage-committee",
+  storageName: "committee-photos",
+};
+
+const {
+  items,
+  loading,
+  isModalOpen,
+  isEditMode,
+  isSaving,
+  form,
+  photoPreview,
+  fetchItems,
+  saveItem,
+  deleteItem,
+  openModal,
+  openEditModal,
+  handleFileChange,
+} = useCrud(config);
+
+onMounted(fetchItems);
+
+const initialFormData = {
   id: null,
   name: "",
   photo_url: "",
   position: "",
   phone_number: "",
   address: "",
-});
-const newPhotoFile = ref(null);
-const photoPreview = ref(null);
-
-async function fetchCommitteeMembers() {
-  try {
-    loading.value = true;
-    const { data, error } = await supabase
-      .from("committee_members")
-      .select("*")
-      .order("name");
-    if (error) throw error;
-    committeeMembers.value = data;
-  } catch (error) {
-    Swal.fire({
-      title: "Error!",
-      text: error.message,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-  } finally {
-    loading.value = false;
-  }
-}
-
-function onFileChange(event) {
-  const file = event.target.files[0];
-  if (file) {
-    newPhotoFile.value = file;
-    photoPreview.value = URL.createObjectURL(file);
-  }
-}
-
-function openCreateModal() {
-  isEditMode.value = false;
-  committeeForm.value = {
-    id: null,
-    name: "",
-    photo_url: "",
-    position: "",
-    phone_number: "",
-    address: "",
-  };
-  newPhotoFile.value = null;
-  photoPreview.value = null;
-  isModalOpen.value = true;
-}
-
-function openEditModal(member) {
-  isEditMode.value = true;
-  committeeForm.value = { ...member };
-  newPhotoFile.value = null;
-  photoPreview.value = member.photo_url;
-  isModalOpen.value = true;
-}
-
-async function handleSave() {
-  isSaving.value = true;
-  let finalPhotoUrl = committeeForm.value.photo_url;
-
-  try {
-    if (newPhotoFile.value) {
-      if (isEditMode.value && committeeForm.value.photo_url) {
-        const oldFilePath = new URL(committeeForm.value.photo_url).pathname
-          .split("/")
-          .pop();
-        await supabase.storage.from("committee-photos").remove([oldFilePath]);
-      }
-
-      const fileName = `${Date.now()}-${newPhotoFile.value.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("committee-photos")
-        .upload(fileName, newPhotoFile.value);
-
-      if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage
-        .from("committee-photos")
-        .getPublicUrl(uploadData.path);
-      finalPhotoUrl = urlData.publicUrl;
-    }
-
-    const payload = { ...committeeForm.value, photo_url: finalPhotoUrl };
-    const response = await supabase.functions.invoke("manage-committee", {
-      method: isEditMode.value ? "PATCH" : "POST",
-      body: payload,
-    });
-
-    if (response.error) throw response.error;
-
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      title: "Sukses!",
-      text: `Data panitia berhasil ${
-        isEditMode.value ? "diperbarui" : "ditambahkan"
-      }`,
-      icon: "success",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-    isModalOpen.value = false;
-    fetchCommitteeMembers();
-  } catch (error) {
-    Swal.fire({
-      title: "Error!",
-      text: error.message,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-  } finally {
-    isSaving.value = false;
-  }
-}
-
-async function handleDelete(member) {
-  const { isConfirmed } = await Swal.fire({
-    title: "Apa Anda yakin?",
-    text: `Anda akan menghapus ${member.name} dari data panitia`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#fb2c36",
-    confirmButtonText: "Ya, Hapus!",
-    cancelButtonText: "Tidak, Batalkan!",
-  });
-  if (isConfirmed) {
-    try {
-      const { error } = await supabase.functions.invoke("manage-committee", {
-        method: "DELETE",
-        body: { id: member.id, photo_url: member.photo_url },
-      });
-      if (error) throw error;
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        title: "Terhapus!",
-        text: `Data panitia ${member.name} berhasil dihapus`,
-        icon: "success",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-      fetchCommitteeMembers();
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: error.message,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-    }
-  }
-}
-
-onMounted(fetchCommitteeMembers);
+};
 </script>
 
 <template>
@@ -188,7 +46,7 @@ onMounted(fetchCommitteeMembers);
     >
       <h1 class="text-3xl font-bold">Data Panitia</h1>
       <button
-        @click="openCreateModal"
+        @click="openModal(initialFormData)"
         class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
       >
         Tambah Data Panitia
@@ -213,13 +71,13 @@ onMounted(fetchCommitteeMembers);
             <tr v-if="loading">
               <td colspan="5" class="px-6 py-4 text-center">Loading...</td>
             </tr>
-            <tr v-else-if="committeeMembers.length === 0">
+            <tr v-else-if="items.length === 0">
               <td colspan="5" class="px-6 py-4 text-center">
                 Tidak ada data panitia yang ditemukan
               </td>
             </tr>
             <tr
-              v-for="member in committeeMembers"
+              v-for="member in items"
               :key="member.id"
               class="hover:bg-gray-50 transition-colors"
             >
@@ -249,7 +107,7 @@ onMounted(fetchCommitteeMembers);
                   <Pencil class="w-5 h-5" />
                 </button>
                 <button
-                  @click="handleDelete(member)"
+                  @click="deleteItem(member)"
                   class="text-red-500 hover:text-red-900 inline-block align-middle cursor-pointer transition-colors"
                 >
                   <Trash2 class="w-5 h-5" />
@@ -264,13 +122,13 @@ onMounted(fetchCommitteeMembers);
     <CommitteeModal
       :isOpen="isModalOpen"
       :isEditMode="isEditMode"
-      :committeeForm="committeeForm"
+      :committeeForm="form.data"
       :isSaving="isSaving"
       :photoPreview="photoPreview"
       @close="isModalOpen = false"
-      @save="handleSave"
-      @fileChange="onFileChange"
-      @update:committeeForm="committeeForm = $event"
+      @save="saveItem"
+      @fileChange="handleFileChange"
+      @update:committeeForm="(payload) => (form.data = payload)"
     />
   </div>
 </template>
