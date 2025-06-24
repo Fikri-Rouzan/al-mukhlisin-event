@@ -1,8 +1,9 @@
 <script setup>
 import { onMounted } from "vue";
 import { useEvents } from "../../composables/useEvents";
-import { Pencil, Trash2, Eye, Image } from "lucide-vue-next";
+import { Pencil, Trash2, Eye, Image, Search } from "lucide-vue-next";
 import EventModal from "../../components/admin/EventModal.vue";
+import Pagination from "../../components/Pagination.vue";
 
 const {
   events,
@@ -21,6 +22,11 @@ const {
   openEditModal,
   closeModal,
   handleFileChange,
+  searchQuery,
+  currentPage,
+  totalItems,
+  rowsPerPage,
+  changePage,
 } = useEvents();
 
 onMounted(fetchAllData);
@@ -38,16 +44,35 @@ const initialFormData = {
 
 <template>
   <div>
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold">Data Kegiatan</h1>
+    </div>
     <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"
+      class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4"
     >
-      <h1 class="text-3xl font-bold">Data Kegiatan</h1>
       <button
         @click="openModal(initialFormData)"
         class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
       >
         Tambah Data Kegiatan
       </button>
+    </div>
+
+    <div class="mb-4 flex justify-end">
+      <div class="relative w-full sm:w-96">
+        <input
+          v-model="searchQuery"
+          type="text"
+          name="search"
+          placeholder="Cari berdasarkan nama atau kategori"
+          class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+        />
+        <div
+          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+        >
+          <Search class="w-5 h-5 text-gray-400" />
+        </div>
+      </div>
     </div>
 
     <div class="w-full overflow-hidden rounded-lg shadow-md">
@@ -125,6 +150,13 @@ const initialFormData = {
         </table>
       </div>
     </div>
+
+    <Pagination
+      :currentPage="currentPage"
+      :totalItems="totalItems"
+      v-model:rowsPerPage="rowsPerPage"
+      @page-changed="changePage"
+    />
 
     <EventModal
       :isOpen="isModalOpen"

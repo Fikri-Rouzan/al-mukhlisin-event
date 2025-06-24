@@ -1,6 +1,14 @@
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import { supabase } from "../lib/supabase";
 import Swal from "sweetalert2";
+
+function debounce(fn, delay = 500) {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+}
 
 export function useEvents() {
   const events = ref([]);
@@ -16,14 +24,31 @@ export function useEvents() {
   const newPhotoFile = ref(null);
   const photoPreview = ref(null);
 
+  const searchQuery = ref("");
+  const currentPage = ref(1);
+  const rowsPerPage = ref(10);
+  const totalItems = ref(0);
+
   async function fetchAllData() {
     try {
       loading.value = true;
+      const from = (currentPage.value - 1) * rowsPerPage.value;
+      const to = from + rowsPerPage.value - 1;
+
+      let eventsQuery = supabase
+        .from("events")
+        .select("*", { count: "exact" })
+        .order("event_date", { ascending: false });
+
+      if (searchQuery.value) {
+        const query = `%${searchQuery.value}%`;
+        eventsQuery = eventsQuery.or(
+          `name.ilike.${query},category.ilike.${query}`
+        );
+      }
+
       const [eventsRes, committeeRes, speakersRes] = await Promise.all([
-        supabase
-          .from("events")
-          .select("*")
-          .order("event_date", { ascending: false }),
+        eventsQuery.range(from, to),
         supabase.from("committee_members").select("id, name"),
         supabase.from("speakers").select("id, name"),
       ]);
@@ -33,12 +58,33 @@ export function useEvents() {
       if (speakersRes.error) throw speakersRes.error;
 
       events.value = eventsRes.data;
+      totalItems.value = eventsRes.count;
       allCommittee.value = committeeRes.data;
       allSpeakers.value = speakersRes.data;
     } catch (error) {
       showErrorAlert(error.message);
     } finally {
       loading.value = false;
+    }
+  }
+
+  watch(
+    searchQuery,
+    debounce(() => {
+      currentPage.value = 1;
+      fetchAllData();
+    })
+  );
+
+  watch(rowsPerPage, () => {
+    currentPage.value = 1;
+    fetchAllData();
+  });
+
+  function changePage(page) {
+    if (page > 0 && page <= Math.ceil(totalItems.value / rowsPerPage.value)) {
+      currentPage.value = page;
+      fetchAllData();
     }
   }
 
@@ -204,6 +250,11 @@ export function useEvents() {
     isSaving,
     form,
     photoPreview,
+    searchQuery,
+    currentPage,
+    totalItems,
+    rowsPerPage,
+    changePage,
     fetchAllData,
     saveItem,
     deleteItem,
