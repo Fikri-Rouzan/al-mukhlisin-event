@@ -139,7 +139,7 @@ async function handleUpdateProfile(formData) {
               <p class="text-lg text-gray-800">{{ profile.name }}</p>
             </div>
             <div>
-              <p class="block text-sm font-medium text-gray-500">Alamat</p>
+              <p class="block text-sm font-medium text-gray-500">Email</p>
               <p class="text-lg text-gray-800">{{ user.email }}</p>
             </div>
           </div>

@@ -49,7 +49,7 @@ onMounted(async () => {
 
     <div v-else class="bg-white p-6 md:p-8 rounded-lg shadow-md">
       <div
-        class="w-full h-64 flex items-center justify-center bg-gray-100 rounded-lg mb-8"
+        class="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg mb-8"
       >
         <img
           v-if="event.details.photo_url"
@@ -62,7 +62,7 @@ onMounted(async () => {
 
       <div class="space-y-6">
         <div class="text-center">
-          <p class="text-3xl sm:text-4xl font-bold text-primary">
+          <p class="text-4xl sm:text-5xl font-bold text-primary">
             {{ event.details.name }}
           </p>
         </div>
