@@ -1,9 +1,8 @@
 <script setup>
 import { onMounted } from "vue";
-import { useCrud } from "../../composables/useCrud";
+import { useCrud } from "../../../composables/useCrud";
 import { Pencil, Trash2, Eye, UserCircle2, Search } from "lucide-vue-next";
-import CommitteeModal from "../../components/admin/CommitteeModal.vue";
-import Pagination from "../../components/Pagination.vue";
+import Pagination from "../../../components/admin/Pagination.vue";
 
 const config = {
   tableName: "committee_members",
@@ -15,17 +14,8 @@ const config = {
 const {
   items,
   loading,
-  isModalOpen,
-  isEditMode,
-  isSaving,
-  form,
-  photoPreview,
   fetchItems,
-  saveItem,
   deleteItem,
-  openModal,
-  openEditModal,
-  handleFileChange,
   searchQuery,
   currentPage,
   totalItems,
@@ -34,15 +24,6 @@ const {
 } = useCrud(config);
 
 onMounted(fetchItems);
-
-const initialFormData = {
-  id: null,
-  name: "",
-  photo_url: "",
-  position: "",
-  phone_number: "",
-  address: "",
-};
 </script>
 
 <template>
@@ -53,12 +34,12 @@ const initialFormData = {
     <div
       class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4"
     >
-      <button
-        @click="openModal(initialFormData)"
-        class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
+      <router-link
+        :to="{ name: 'AdminCommitteeCreate' }"
+        class="bg-primary hover:bg-secondary text-center text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
       >
         Tambah Data Panitia
-      </button>
+      </router-link>
     </div>
 
     <div class="mb-4 flex justify-end">
@@ -87,7 +68,7 @@ const initialFormData = {
             >
               <th class="px-6 py-3">Foto</th>
               <th class="px-6 py-3">Nama</th>
-              <th class="px-6 py-3">Posisi</th>
+              <th class="px-6 py-3">Jabatan</th>
               <th class="px-6 py-3">Nomor Telepon</th>
               <th class="px-6 py-3 text-right">Aksi</th>
             </tr>
@@ -124,12 +105,15 @@ const initialFormData = {
                   class="text-indigo-500 hover:text-indigo-900 mr-4 inline-block align-middle transition-colors"
                   ><Eye class="w-5 h-5"
                 /></router-link>
-                <button
-                  @click="openEditModal(member)"
+                <router-link
+                  :to="{
+                    name: 'AdminCommitteeEdit',
+                    params: { id: member.id },
+                  }"
                   class="text-orange-500 hover:text-orange-900 mr-4 inline-block align-middle cursor-pointer transition-colors"
                 >
                   <Pencil class="w-5 h-5" />
-                </button>
+                </router-link>
                 <button
                   @click="deleteItem(member)"
                   class="text-red-500 hover:text-red-900 inline-block align-middle cursor-pointer transition-colors"
@@ -148,18 +132,6 @@ const initialFormData = {
       :totalItems="totalItems"
       v-model:rowsPerPage="rowsPerPage"
       @page-changed="changePage"
-    />
-
-    <CommitteeModal
-      :isOpen="isModalOpen"
-      :isEditMode="isEditMode"
-      :committeeForm="form.data"
-      :isSaving="isSaving"
-      :photoPreview="photoPreview"
-      @close="isModalOpen = false"
-      @save="saveItem"
-      @fileChange="handleFileChange"
-      @update:committeeForm="(payload) => (form.data = payload)"
     />
   </div>
 </template>

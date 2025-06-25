@@ -80,7 +80,7 @@ const closeMenu = () => {
   >
     <div
       v-if="isMenuOpen"
-      class="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-primary text-white p-6 z-40 flex flex-col"
+      class="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-primary text-white p-6 z-40 flex flex-col md:hidden"
     >
       <div class="flex justify-between items-center mb-8">
         <h2 class="text-xl font-bold">Menu</h2>
@@ -113,7 +113,7 @@ const closeMenu = () => {
           class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
         >
           <User :size="22" />
-          <span>Profile</span>
+          <span>Profil</span>
         </RouterLink>
         <RouterLink
           v-if="!user"

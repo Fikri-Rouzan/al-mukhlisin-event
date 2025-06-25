@@ -1,15 +1,12 @@
 <script setup>
-import { ref, computed } from "vue";
-import { useAuth } from "../composables/useAuth";
-import { supabase } from "../lib/supabase";
+import { computed } from "vue";
+import { useAuth } from "../../composables/useAuth";
 import Swal from "sweetalert2";
-import ProfileEditModal from "../components/resident/ProfileEditModal.vue";
 import { Pencil, LogOut } from "lucide-vue-next";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const { user, profile, logout } = useAuth();
-
-const isModalOpen = ref(false);
-const isSaving = ref(false);
 
 const userInitials = computed(() => {
   if (profile.value?.name) {
@@ -30,69 +27,12 @@ async function handleLogout() {
     showCancelButton: true,
     confirmButtonColor: "#006a4e",
     confirmButtonText: "Ya, Logout!",
-    cancelButtonText: "Batal",
+    cancelButtonText: "Tidak!",
   });
 
   if (result.isConfirmed) {
     await logout();
-  }
-}
-
-async function handleUpdateProfile(formData) {
-  if (
-    formData.newPassword &&
-    formData.newPassword !== formData.confirmPassword
-  ) {
-    return Swal.fire({
-      icon: "error",
-      title: "Error!",
-      text: "Password tidak cocok dengan konfirmasi password",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-  }
-
-  isSaving.value = true;
-  try {
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({ name: formData.name })
-      .eq("id", user.value.id);
-
-    if (profileError) throw profileError;
-
-    if (formData.newPassword) {
-      const { error: authError } = await supabase.auth.updateUser({
-        password: formData.newPassword,
-      });
-      if (authError) throw authError;
-    }
-
-    profile.value.name = formData.name;
-
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      icon: "success",
-      title: "Sukses!",
-      text: "Profil berhasil diperbarui",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-    isModalOpen.value = false;
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error!",
-      text: error.message,
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-  } finally {
-    isSaving.value = false;
+    router.push({ name: "Home" });
   }
 }
 </script>
@@ -101,13 +41,13 @@ async function handleUpdateProfile(formData) {
   <div class="flex items-center min-h-[75vh]">
     <div class="w-full max-w-2xl mx-auto">
       <div class="bg-white shadow-xl rounded-2xl relative overflow-hidden">
-        <button
-          @click="isModalOpen = true"
+        <router-link
+          :to="{ name: 'ProfileEdit' }"
           class="absolute top-4 right-4 p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-primary transition-colors cursor-pointer"
           aria-label="Edit Profil"
         >
           <Pencil class="w-5 h-5" />
-        </button>
+        </router-link>
 
         <div v-if="profile" class="p-6 sm:p-8">
           <h1 class="text-3xl font-bold text-primary text-center mb-8">
@@ -161,12 +101,4 @@ async function handleUpdateProfile(formData) {
       </div>
     </div>
   </div>
-
-  <ProfileEditModal
-    :isOpen="isModalOpen"
-    :profileData="profile"
-    :isSaving="isSaving"
-    @close="isModalOpen = false"
-    @save="handleUpdateProfile"
-  />
 </template>

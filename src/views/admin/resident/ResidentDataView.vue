@@ -1,9 +1,8 @@
 <script setup>
 import { onMounted } from "vue";
-import { useCrud } from "../../composables/useCrud";
+import { useCrud } from "../../../composables/useCrud";
 import { Pencil, Trash2, Search } from "lucide-vue-next";
-import ResidentModal from "../../components/admin/ResidentModal.vue";
-import Pagination from "../../components/Pagination.vue";
+import Pagination from "../../../components/admin/Pagination.vue";
 
 const config = {
   fetchRpc: "get_all_residents",
@@ -14,15 +13,8 @@ const config = {
 const {
   items,
   loading,
-  isModalOpen,
-  isEditMode,
-  isSaving,
-  form,
   fetchItems,
-  saveItem,
   deleteItem,
-  openModal,
-  openEditModal,
   searchQuery,
   currentPage,
   totalItems,
@@ -31,14 +23,6 @@ const {
 } = useCrud(config);
 
 onMounted(fetchItems);
-
-const initialFormData = {
-  id: null,
-  name: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
 </script>
 
 <template>
@@ -49,12 +33,12 @@ const initialFormData = {
     <div
       class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4"
     >
-      <button
-        @click="openModal(initialFormData)"
-        class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
+      <router-link
+        :to="{ name: 'AdminResidentsCreate' }"
+        class="bg-primary hover:bg-secondary text-center text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
       >
         Tambah Data Warga
-      </button>
+      </router-link>
     </div>
 
     <div class="mb-4 flex justify-end">
@@ -103,15 +87,19 @@ const initialFormData = {
               <td class="px-6 py-4">{{ resident.name }}</td>
               <td class="px-6 py-4">{{ resident.email }}</td>
               <td class="px-6 py-4 text-right">
-                <button
-                  @click="openEditModal(resident)"
-                  class="text-orange-500 hover:text-orange-900 mr-4 cursor-pointer transition-colors"
+                <router-link
+                  :to="{
+                    name: 'AdminResidentsEdit',
+                    params: { id: resident.id },
+                  }"
+                  class="text-orange-500 hover:text-orange-900 mr-4 cursor-pointer transition-colors inline-block align-middle"
                 >
                   <Pencil class="w-5 h-5" />
-                </button>
+                </router-link>
+
                 <button
                   @click="deleteItem(resident)"
-                  class="text-red-500 hover:text-red-900 cursor-pointer transition-colors"
+                  class="text-red-500 hover:text-red-900 cursor-pointer transition-colors inline-block align-middle"
                 >
                   <Trash2 class="w-5 h-5" />
                 </button>
@@ -127,16 +115,6 @@ const initialFormData = {
       :totalItems="totalItems"
       v-model:rowsPerPage="rowsPerPage"
       @page-changed="changePage"
-    />
-
-    <ResidentModal
-      :isOpen="isModalOpen"
-      :isEditMode="isEditMode"
-      :residentForm="form.data"
-      :isSaving="isSaving"
-      @close="isModalOpen = false"
-      @save="saveItem"
-      @update:residentForm="(payload) => (form.data = payload)"
     />
   </div>
 </template>

@@ -1,30 +1,130 @@
 <script setup>
-import { ref } from "vue";
-import Modal from "../Modal.vue";
-import { Eye, EyeOff, User, Mail, Lock } from "lucide-vue-next";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { supabase } from "../../../lib/supabase";
+import Swal from "sweetalert2";
+import { Eye, EyeOff, User, Mail, Lock, ChevronLeft } from "lucide-vue-next";
 
-defineProps({
-  isOpen: Boolean,
-  isEditMode: Boolean,
-  residentForm: Object,
-  isSaving: Boolean,
+const route = useRoute();
+const router = useRouter();
+
+const isEditMode = ref(false);
+const residentForm = ref({
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 });
-
-const emit = defineEmits(["close", "save", "update:residentForm"]);
-
+const isSaving = ref(false);
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+
+const residentId = route.params.id;
+if (residentId) {
+  isEditMode.value = true;
+}
+
+async function fetchResidentData() {
+  if (!isEditMode.value) return;
+  try {
+    const { data: user, error } = await supabase
+      .rpc("get_user_by_id", { p_user_id: residentId })
+      .single();
+
+    if (error) throw error;
+
+    if (user) {
+      residentForm.value = { ...user, password: "", confirmPassword: "" };
+    } else {
+      throw new Error("Data warga tidak ditemukan");
+    }
+  } catch (error) {
+    Swal.fire({
+      title: "Error!",
+      text: error.message,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
+    router.push({ name: "AdminResidents" });
+  }
+}
+
+async function handleSaveResident() {
+  if (residentForm.value.password || !isEditMode.value) {
+    if (residentForm.value.password !== residentForm.value.confirmPassword) {
+      return Swal.fire({
+        title: "Error!",
+        text: "Password tidak cocok dengan konfirmasi password",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+    }
+  }
+
+  isSaving.value = true;
+  try {
+    const payload = {
+      method: isEditMode.value ? "PATCH" : "POST",
+      body: {
+        id: isEditMode.value ? residentId : undefined,
+        name: residentForm.value.name,
+        email: residentForm.value.email,
+        password: residentForm.value.password || undefined,
+      },
+    };
+
+    const { error } = await supabase.functions.invoke(
+      "manage-resident",
+      payload
+    );
+    if (error) throw error;
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      title: "Sukses!",
+      text: `Data warga berhasil ${
+        isEditMode.value ? "diperbarui" : "ditambahkan"
+      }`,
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
+    router.push({ name: "AdminResidents" });
+  } catch (error) {
+    Swal.fire({
+      title: "Error!",
+      text: error.message,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
+  } finally {
+    isSaving.value = false;
+  }
+}
+
+onMounted(() => {
+  fetchResidentData();
+});
 </script>
 
 <template>
-  <Modal :isOpen="isOpen" @close="$emit('close')">
-    <template #header>{{ isEditMode ? "Edit " : "Buat" }} Data Warga</template>
-    <template #body>
-      <form
-        @submit.prevent="$emit('save')"
-        id="resident-form"
-        class="space-y-4"
-      >
+  <div>
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold">
+        {{ isEditMode ? "Edit Data Warga" : "Tambah Data Warga" }}
+      </h1>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <form @submit.prevent="handleSaveResident" class="space-y-4">
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700"
             >Nama</label
@@ -36,16 +136,10 @@ const showConfirmPassword = ref(false);
               <User class="w-5 h-5 text-gray-400" />
             </div>
             <input
-              :value="residentForm.name"
-              @input="
-                $emit('update:residentForm', {
-                  ...residentForm,
-                  name: $event.target.value,
-                })
-              "
+              v-model="residentForm.name"
               type="text"
               id="name"
-              :placeholder="'Masukkan nama' + (isEditMode ? ' baru' : '')"
+              placeholder="Masukkan nama"
               autocomplete="name"
               required
               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
@@ -64,16 +158,10 @@ const showConfirmPassword = ref(false);
               <Mail class="w-5 h-5 text-gray-400" />
             </div>
             <input
-              :value="residentForm.email"
-              @input="
-                $emit('update:residentForm', {
-                  ...residentForm,
-                  email: $event.target.value,
-                })
-              "
+              v-model="residentForm.email"
               type="email"
               id="email"
-              :placeholder="'Masukkan email' + (isEditMode ? ' baru' : '')"
+              placeholder="Masukkan email"
               autocomplete="email"
               :disabled="isEditMode"
               :required="!isEditMode"
@@ -93,13 +181,7 @@ const showConfirmPassword = ref(false);
               <Lock class="w-5 h-5 text-gray-400" />
             </div>
             <input
-              :value="residentForm.password"
-              @input="
-                $emit('update:residentForm', {
-                  ...residentForm,
-                  password: $event.target.value,
-                })
-              "
+              v-model="residentForm.password"
               :type="showPassword ? 'text' : 'password'"
               id="password"
               :placeholder="
@@ -134,13 +216,7 @@ const showConfirmPassword = ref(false);
               <Lock class="w-5 h-5 text-gray-400" />
             </div>
             <input
-              :value="residentForm.confirmPassword"
-              @input="
-                $emit('update:residentForm', {
-                  ...residentForm,
-                  confirmPassword: $event.target.value,
-                })
-              "
+              v-model="residentForm.confirmPassword"
               :type="showConfirmPassword ? 'text' : 'password'"
               id="confirmPassword"
               :placeholder="
@@ -161,23 +237,23 @@ const showConfirmPassword = ref(false);
             </button>
           </div>
         </div>
+
+        <div class="flex justify-end md:justify-start items-center gap-4 pt-4">
+          <router-link
+            :to="{ name: 'AdminResidents' }"
+            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 cursor-pointer transition-colors"
+          >
+            Batal
+          </router-link>
+          <button
+            type="submit"
+            :disabled="isSaving"
+            class="px-4 py-2 bg-primary hover:bg-secondary text-white rounded-md disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed transition-colors"
+          >
+            {{ isSaving ? "Menyimpan..." : "Simpan" }}
+          </button>
+        </div>
       </form>
-    </template>
-    <template #footer>
-      <button
-        @click="$emit('close')"
-        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 cursor-pointer transition-colors"
-      >
-        Batal
-      </button>
-      <button
-        type="submit"
-        form="resident-form"
-        :disabled="isSaving"
-        class="px-4 py-2 bg-primary hover:bg-secondary text-white rounded-md disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed transition-colors"
-      >
-        {{ isSaving ? "Menyimpan..." : "Simpan" }}
-      </button>
-    </template>
-  </Modal>
+    </div>
+  </div>
 </template>

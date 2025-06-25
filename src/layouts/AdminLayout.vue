@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { RouterView } from "vue-router";
 import { useAuth } from "../composables/useAuth";
 import { Menu } from "lucide-vue-next";
-import AdminSidebar from "../components/AdminSidebar.vue";
+import Sidebar from "../components/admin/Sidebar.vue";
 
 const { logout } = useAuth();
 const isSidebarOpen = ref(false);
@@ -21,7 +21,7 @@ const closeSidebar = () => {
       class="fixed inset-0 z-20 bg-black opacity-50 md:hidden"
     ></div>
 
-    <AdminSidebar
+    <Sidebar
       :is-open="isSidebarOpen"
       :logout="logout"
       :close-sidebar="closeSidebar"

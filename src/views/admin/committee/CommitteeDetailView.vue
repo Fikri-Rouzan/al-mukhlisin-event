@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { supabase } from "../../lib/supabase";
+import { supabase } from "../../../lib/supabase";
 import Swal from "sweetalert2";
 import { ArrowLeft, UserCircle2 } from "lucide-vue-next";
 
@@ -48,7 +48,7 @@ onMounted(async () => {
 
     <div v-if="loading" class="text-center py-10">Loading...</div>
     <div v-else-if="!member" class="text-center py-10">
-      Data panitia tidak ditemukan.
+      Data panitia tidak ditemukan
     </div>
 
     <div v-else class="bg-white p-6 sm:p-8 rounded-lg shadow-md">
@@ -79,7 +79,7 @@ onMounted(async () => {
               <h3
                 class="font-bold text-gray-500 uppercase text-base tracking-wider"
               >
-                Posisi
+                Jabatan
               </h3>
               <p class="text-lg text-gray-800">
                 {{ member.position }}

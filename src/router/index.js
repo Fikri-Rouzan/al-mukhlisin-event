@@ -7,16 +7,22 @@ import AdminLayout from "../layouts/AdminLayout.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/auth/LoginView.vue";
 import RegisterView from "../views/auth/RegisterView.vue";
-import ProfileView from "../views/ProfileView.vue";
-import ResidentDataView from "../views/admin/ResidentDataView.vue";
-import CommitteeDataView from "../views/admin/CommitteeDataView.vue";
-import CommitteeDetailView from "../views/admin/CommitteeDetailView.vue";
-import SpeakersDataView from "../views/admin/SpeakersDataView.vue";
-import SpeakersDetailView from "../views/admin/SpeakersDetailView.vue";
-import EventsDataView from "../views/admin/EventsDataView.vue";
-import EventDetailView from "../views/admin/EventDetailView.vue";
 import EventsListView from "../views/EventsListView.vue";
 import EventDetailPublicView from "../views/EventDetailPublicView.vue";
+import ProfileView from "../views/resident/ProfileView.vue";
+import ProfileEditView from "../views/resident/ProfileEditView.vue";
+
+import ResidentDataView from "../views/admin/resident/ResidentDataView.vue";
+import ResidentFormView from "../views/admin/resident/ResidentFormView.vue";
+import CommitteeDataView from "../views/admin/committee/CommitteeDataView.vue";
+import CommitteeFormView from "../views/admin/committee/CommitteeFormView.vue";
+import CommitteeDetailView from "../views/admin/committee/CommitteeDetailView.vue";
+import SpeakersDataView from "../views/admin/speaker/SpeakersDataView.vue";
+import SpeakersFormView from "../views/admin/speaker/SpeakersFormView.vue";
+import SpeakersDetailView from "../views/admin/speaker/SpeakersDetailView.vue";
+import EventsDataView from "../views/admin/event/EventsDataView.vue";
+import EventFormView from "../views/admin/event/EventFormView.vue";
+import EventDetailView from "../views/admin/event/EventDetailView.vue";
 
 const routes = [
   {
@@ -43,6 +49,12 @@ const routes = [
         meta: { requiresAuth: true, role: "resident" },
       },
       {
+        path: "profile/edit",
+        name: "ProfileEdit",
+        component: ProfileEditView,
+        meta: { requiresAuth: true, role: "resident" },
+      },
+      {
         path: "events",
         name: "EventsList",
         component: EventsListView,
@@ -65,9 +77,29 @@ const routes = [
         component: ResidentDataView,
       },
       {
+        path: "residents/create",
+        name: "AdminResidentsCreate",
+        component: ResidentFormView,
+      },
+      {
+        path: "residents/edit/:id",
+        name: "AdminResidentsEdit",
+        component: ResidentFormView,
+      },
+      {
         path: "committee",
         name: "AdminCommittee",
         component: CommitteeDataView,
+      },
+      {
+        path: "committee/create",
+        name: "AdminCommitteeCreate",
+        component: CommitteeFormView,
+      },
+      {
+        path: "committee/edit/:id",
+        name: "AdminCommitteeEdit",
+        component: CommitteeFormView,
       },
       {
         path: "committee/:id",
@@ -80,6 +112,16 @@ const routes = [
         component: SpeakersDataView,
       },
       {
+        path: "speakers/create",
+        name: "AdminSpeakersCreate",
+        component: SpeakersFormView,
+      },
+      {
+        path: "speakers/edit/:id",
+        name: "AdminSpeakersEdit",
+        component: SpeakersFormView,
+      },
+      {
         path: "speakers/:id",
         name: "AdminSpeakerDetail",
         component: SpeakersDetailView,
@@ -88,6 +130,16 @@ const routes = [
         path: "events",
         name: "AdminEvents",
         component: EventsDataView,
+      },
+      {
+        path: "events/create",
+        name: "AdminEventsCreate",
+        component: EventFormView,
+      },
+      {
+        path: "events/edit/:id",
+        name: "AdminEventsEdit",
+        component: EventFormView,
       },
       {
         path: "events/:id",

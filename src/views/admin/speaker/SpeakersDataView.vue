@@ -1,9 +1,8 @@
 <script setup>
 import { onMounted } from "vue";
-import { useCrud } from "../../composables/useCrud";
+import { useCrud } from "../../../composables/useCrud";
 import { Pencil, Trash2, Eye, UserCircle2, Search } from "lucide-vue-next";
-import SpeakersModal from "../../components/admin/SpeakersModal.vue";
-import Pagination from "../../components/Pagination.vue";
+import Pagination from "../../../components/admin/Pagination.vue";
 
 const config = {
   tableName: "speakers",
@@ -15,17 +14,8 @@ const config = {
 const {
   items,
   loading,
-  isModalOpen,
-  isEditMode,
-  isSaving,
-  form,
-  photoPreview,
   fetchItems,
-  saveItem,
   deleteItem,
-  openModal,
-  openEditModal,
-  handleFileChange,
   searchQuery,
   currentPage,
   totalItems,
@@ -34,14 +24,6 @@ const {
 } = useCrud(config);
 
 onMounted(fetchItems);
-
-const initialFormData = {
-  id: null,
-  name: "",
-  photo_url: "",
-  phone_number: "",
-  address: "",
-};
 </script>
 
 <template>
@@ -52,12 +34,12 @@ const initialFormData = {
     <div
       class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4"
     >
-      <button
-        @click="openModal(initialFormData)"
-        class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
+      <router-link
+        :to="{ name: 'AdminSpeakersCreate' }"
+        class="bg-primary hover:bg-secondary text-center text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors w-full sm:w-auto cursor-pointer"
       >
         Tambah Data Narasumber
-      </button>
+      </router-link>
     </div>
 
     <div class="mb-4 flex justify-end">
@@ -121,12 +103,15 @@ const initialFormData = {
                   class="text-indigo-600 hover:text-indigo-900 mr-4 inline-block align-middle transition-colors"
                   ><Eye class="w-5 h-5"
                 /></router-link>
-                <button
-                  @click="openEditModal(speaker)"
+                <router-link
+                  :to="{
+                    name: 'AdminSpeakersEdit',
+                    params: { id: speaker.id },
+                  }"
                   class="text-orange-500 hover:text-orange-900 mr-4 inline-block align-middle cursor-pointer transition-colors"
                 >
                   <Pencil class="w-5 h-5" />
-                </button>
+                </router-link>
                 <button
                   @click="deleteItem(speaker)"
                   class="text-red-500 hover:text-red-900 inline-block align-middle cursor-pointer transition-colors"
@@ -145,18 +130,6 @@ const initialFormData = {
       :totalItems="totalItems"
       v-model:rowsPerPage="rowsPerPage"
       @page-changed="changePage"
-    />
-
-    <SpeakersModal
-      :isOpen="isModalOpen"
-      :isEditMode="isEditMode"
-      :speakerForm="form.data"
-      :isSaving="isSaving"
-      :photoPreview="photoPreview"
-      @close="isModalOpen = false"
-      @save="saveItem"
-      @fileChange="handleFileChange"
-      @update:speakerForm="(payload) => (form.data = payload)"
     />
   </div>
 </template>

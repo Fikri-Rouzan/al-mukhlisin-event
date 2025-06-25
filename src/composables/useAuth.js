@@ -78,5 +78,6 @@ export function useAuth() {
     user,
     profile,
     logout,
+    fetchProfile,
   };
 }
