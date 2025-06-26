@@ -2,9 +2,10 @@
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { useAuth } from "../composables/useAuth";
-import { Home, Calendar, User, Menu, X, LogIn } from "lucide-vue-next";
+import { Home, Calendar, User, Menu, X, LogIn, LogOut } from "lucide-vue-next";
+import Swal from "sweetalert2";
 
-const { user } = useAuth();
+const { user, logout } = useAuth();
 const isMenuOpen = ref(false);
 
 const toggleMenu = () => {
@@ -14,6 +15,23 @@ const toggleMenu = () => {
 const closeMenu = () => {
   isMenuOpen.value = false;
 };
+
+async function handleLogout() {
+  closeMenu();
+  const result = await Swal.fire({
+    title: "Ingin Logout?",
+    text: "Anda akan keluar dari akun ini",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#006a4e",
+    confirmButtonText: "Ya, Logout!",
+    cancelButtonText: "Batal!",
+  });
+
+  if (result.isConfirmed) {
+    await logout();
+  }
+}
 </script>
 
 <template>
@@ -45,7 +63,6 @@ const closeMenu = () => {
           <span>Kegiatan</span>
         </RouterLink>
         <RouterLink
-          v-if="user"
           to="/profile"
           class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors"
         >
@@ -60,6 +77,13 @@ const closeMenu = () => {
           <LogIn :size="18" />
           <span>Login</span>
         </RouterLink>
+        <button
+          v-else
+          @click="handleLogout"
+          class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors cursor-pointer"
+        >
+          <LogOut :size="18" /> <span>Logout</span>
+        </button>
       </div>
 
       <div class="md:hidden">
@@ -107,7 +131,6 @@ const closeMenu = () => {
           <span>Kegiatan</span>
         </RouterLink>
         <RouterLink
-          v-if="user"
           to="/profile"
           @click="closeMenu"
           class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
@@ -124,6 +147,14 @@ const closeMenu = () => {
           <LogIn :size="22" />
           <span>Login</span>
         </RouterLink>
+        <button
+          v-else
+          @click="handleLogout"
+          class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
+        >
+          <LogOut :size="22" />
+          <span>Logout</span>
+        </button>
       </nav>
     </div>
   </Transition>

@@ -18,7 +18,7 @@ const confirmLogout = () => {
     showCancelButton: true,
     confirmButtonColor: "#006a4e",
     confirmButtonText: "Ya, Logout!",
-    cancelButtonText: "Tidak!",
+    cancelButtonText: "Batal!",
   }).then((result) => {
     if (result.isConfirmed) {
       props.logout();

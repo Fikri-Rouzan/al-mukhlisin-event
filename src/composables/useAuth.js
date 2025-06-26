@@ -21,10 +21,9 @@ export function useAuth() {
       profile.value = data;
     } catch (error) {
       Swal.fire({
-        toast: true,
-        position: "top-end",
         icon: "error",
         title: "Gagal Mengambil Profil Pengguna!",
+        text: error.message,
         showConfirmButton: false,
         timer: 2000,
         timerProgressBar: true,

@@ -195,7 +195,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.requiresAuth) {
     if (!user) {
-      return next("/login");
+      return next({ path: "/login", query: { redirected_from: to.fullPath } });
     }
 
     if (to.meta.role) {

@@ -1,14 +1,11 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { useAuth } from "../composables/useAuth";
-
-const { user } = useAuth();
 const currentYear = new Date().getFullYear();
 
 const addressText =
   "Masjid Jami Al Mukhlisin, Jl. Talas III No.54, RT.1/RW.2, Pd. Cabe Ilir, Kec. Pamulang, Kota Tangerang Selatan, Banten 15418";
 
-const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+const googleMapsUrl = `https://maps.google.com/?q=${encodeURIComponent(
   addressText
 )}`;
 </script>
@@ -39,18 +36,11 @@ const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeU
                 >Kegiatan</RouterLink
               >
             </li>
-            <li v-if="user">
+            <li>
               <RouterLink
                 to="/profile"
                 class="hover:text-secondary transition-colors"
                 >Profil</RouterLink
-              >
-            </li>
-            <li v-else>
-              <RouterLink
-                to="/login"
-                class="hover:text-secondary transition-colors"
-                >Login</RouterLink
               >
             </li>
           </ul>
@@ -74,7 +64,7 @@ const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeU
       </div>
 
       <div class="mt-12 pt-6 text-center text-base">
-        <p>&copy; {{ currentYear }} Al-Mukhlisin. All Rights Reserved</p>
+        <p>© {{ currentYear }} Al-Mukhlisin. All Rights Reserved</p>
       </div>
     </div>
   </footer>

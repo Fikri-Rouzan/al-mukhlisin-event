@@ -1,16 +1,30 @@
 <script setup>
-import { ref } from "vue";
-import { RouterLink, useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { RouterLink, useRouter, useRoute } from "vue-router";
 import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
 import { Eye, EyeOff, Mail, Lock } from "lucide-vue-next";
 
 const router = useRouter();
+const route = useRoute();
 
 const email = ref("");
 const password = ref("");
 const loading = ref(false);
 const showPassword = ref(false);
+
+onMounted(() => {
+  if (route.query.redirected_from) {
+    Swal.fire({
+      icon: "info",
+      title: "Akses Dibatasi!",
+      text: "Anda harus login terlebih dahulu untuk mengakses halaman tersebut",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
+  }
+});
 
 const handleLogin = async () => {
   try {

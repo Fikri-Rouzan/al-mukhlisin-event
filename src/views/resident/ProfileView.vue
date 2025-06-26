@@ -1,12 +1,9 @@
 <script setup>
 import { computed } from "vue";
 import { useAuth } from "../../composables/useAuth";
-import Swal from "sweetalert2";
-import { Pencil, LogOut } from "lucide-vue-next";
-import { useRouter } from "vue-router";
+import { Pencil } from "lucide-vue-next";
 
-const router = useRouter();
-const { user, profile, logout } = useAuth();
+const { user, profile } = useAuth();
 
 const userInitials = computed(() => {
   if (profile.value?.name) {
@@ -18,23 +15,6 @@ const userInitials = computed(() => {
   }
   return "U";
 });
-
-async function handleLogout() {
-  const result = await Swal.fire({
-    title: "Ingin Logout?",
-    text: "Anda akan keluar dari akun ini",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#006a4e",
-    confirmButtonText: "Ya, Logout!",
-    cancelButtonText: "Tidak!",
-  });
-
-  if (result.isConfirmed) {
-    await logout();
-    router.push({ name: "Home" });
-  }
-}
 </script>
 
 <template>
@@ -88,16 +68,6 @@ async function handleLogout() {
         <div v-else class="p-8 text-center">
           <p>Loading profil pengguna...</p>
         </div>
-      </div>
-
-      <div class="mt-6">
-        <button
-          @click="handleLogout"
-          class="w-full flex justify-center items-center space-x-2 bg-red-500 text-white py-3 rounded-lg hover:bg-red-800 treansition-colors cursor-pointer"
-        >
-          <LogOut class="w-5 h-5" />
-          <span class="font-semibold">Logout</span>
-        </button>
       </div>
     </div>
   </div>
