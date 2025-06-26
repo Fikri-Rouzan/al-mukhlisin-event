@@ -29,7 +29,11 @@ const routes = [
     path: "/",
     component: PublicLayout,
     children: [
-      { path: "", name: "Home", component: HomeView },
+      {
+        path: "",
+        name: "Home",
+        component: HomeView,
+      },
       {
         path: "login",
         name: "Login",
