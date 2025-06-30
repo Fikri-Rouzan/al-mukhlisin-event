@@ -4,6 +4,7 @@ import { RouterLink, useRouter, useRoute } from "vue-router";
 import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
 import { Eye, EyeOff, Mail, Lock } from "lucide-vue-next";
+import { motion } from "motion-v";
 
 const router = useRouter();
 const route = useRoute();
@@ -83,20 +84,50 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-[calc(100vh-8rem)] px-4">
+  <motion.div
+    :initial="{ opacity: 0 }"
+    :whileInView="{ opacity: 1 }"
+    :transition="{ duration: 1 }"
+    class="flex items-center justify-center min-h-[calc(100vh-8rem)] px-4"
+  >
     <div
       class="w-full max-w-4xl flex flex-col md:flex-row bg-white shadow-xl rounded-2xl overflow-hidden"
     >
       <div
         class="w-full md:w-1/2 bg-primary text-white flex flex-col items-center justify-center p-10 text-center"
       >
-        <h1 class="text-3xl font-bold">Selamat Datang di Al Mukhlisin!</h1>
-        <p class="mt-6">Silakan login menggunakan akun yang telah dibuat</p>
+        <motion.h1
+          :initial="{ y: -20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.3, duration: 0.5 }"
+          class="text-3xl font-bold"
+          >Selamat Datang di Al Mukhlisin!</motion.h1
+        >
+        <motion.p
+          :initial="{ y: -20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.5, duration: 0.5 }"
+          class="mt-6"
+          >Silakan login menggunakan akun yang telah dibuat</motion.p
+        >
       </div>
 
       <div class="w-full md:w-1/2 p-8 space-y-6">
-        <h1 class="text-2xl font-bold text-center text-primary">Login Akun</h1>
-        <form @submit.prevent="handleLogin" class="space-y-4">
+        <motion.h1
+          class="text-2xl font-bold text-center text-primary"
+          :initial="{ y: -20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.6, duration: 0.5 }"
+        >
+          Login Akun</motion.h1
+        >
+        <motion.form
+          @submit.prevent="handleLogin"
+          class="space-y-4"
+          :initial="{ opacity: 0 }"
+          :whileInView="{ opacity: 1 }"
+          :transition="{ delay: 0.8, duration: 0.5 }"
+        >
           <div>
             <label for="email" class="block text-gray-700 mb-2">Email</label>
             <div class="relative">
@@ -151,16 +182,21 @@ const handleLogin = async () => {
           >
             {{ loading ? "Sedang Login..." : "Login" }}
           </button>
-        </form>
-        <p class="text-center">
+        </motion.form>
+        <motion.p
+          class="text-center"
+          :initial="{ y: 20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.9, duration: 0.6 }"
+        >
           Belum memiliki akun?
           <RouterLink
             to="/register"
             class="text-primary hover:text-secondary hover:underline transition-colors"
             >Daftar di sini</RouterLink
           >
-        </p>
+        </motion.p>
       </div>
     </div>
-  </div>
+  </motion.div>
 </template>

@@ -5,6 +5,7 @@ import { useAuth } from "../../composables/useAuth";
 import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
 import { Eye, EyeOff, User, Lock } from "lucide-vue-next";
+import { motion } from "motion-v";
 
 const router = useRouter();
 const { user, profile, fetchProfile } = useAuth();
@@ -93,16 +94,29 @@ async function handleUpdateProfile() {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-[75vh]">
+  <motion.div
+    class="flex items-center justify-center min-h-[75vh]"
+    :initial="{ opacity: 0 }"
+    :whileInView="{ opacity: 1 }"
+    :transition="{ duration: 1 }"
+  >
     <div class="w-full max-w-lg">
       <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl">
-        <h1 class="text-3xl font-bold text-primary text-center mb-8">
+        <motion.h1
+          class="text-3xl font-bold text-primary text-center mb-8"
+          :initial="{ y: -20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.3, duration: 0.5 }"
+        >
           Edit Profil Saya
-        </h1>
-        <form
+        </motion.h1>
+        <motion.form
           @submit.prevent="handleUpdateProfile"
           id="profile-edit-form"
           class="space-y-4"
+          :initial="{ opacity: 0 }"
+          :whileInView="{ opacity: 1 }"
+          :transition="{ delay: 0.5, duration: 0.5 }"
         >
           <div>
             <label for="name" class="block text-sm font-medium text-gray-700"
@@ -202,8 +216,8 @@ async function handleUpdateProfile() {
               {{ isSaving ? "Menyimpan..." : "Simpan Perubahan" }}
             </button>
           </div>
-        </form>
+        </motion.form>
       </div>
     </div>
-  </div>
+  </motion.div>
 </template>

@@ -80,7 +80,7 @@ onMounted(async () => {
         <motion.div
           :initial="{ opacity: 0 }"
           :whileInView="{ opacity: 1 }"
-          :transition="{ duration: 0.6, delay: 0.9 }"
+          :transition="{ delay: 0.7, duration: 0.5 }"
           class="block bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden group"
         >
           <div

@@ -4,6 +4,7 @@ import { RouterLink, useRouter } from "vue-router";
 import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-vue-next";
+import { motion } from "motion-v";
 
 const router = useRouter();
 
@@ -96,20 +97,52 @@ const handleRegister = async () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-[calc(100vh-8rem)] px-4">
+  <motion.div
+    class="flex items-center justify-center min-h-[calc(100vh-8rem)] px-4"
+    :initial="{ opacity: 0 }"
+    :whileInView="{ opacity: 1 }"
+    :transition="{ duration: 1 }"
+  >
     <div
       class="w-full max-w-4xl flex flex-col md:flex-row bg-white shadow-xl rounded-2xl overflow-hidden"
     >
       <div
         class="w-full md:w-1/2 bg-primary text-white flex flex-col items-center justify-center p-10 text-center"
       >
-        <h1 class="text-3xl font-bold">Daftarkan Akunmu Disini!</h1>
-        <p class="mt-6">Silakan daftar untuk proses pembuatan akun</p>
+        <motion.h1
+          class="text-3xl font-bold"
+          :initial="{ y: -20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.3, duration: 0.5 }"
+        >
+          Daftarkan Akunmu Disini!</motion.h1
+        >
+        <motion.p
+          class="mt-6"
+          :initial="{ y: -20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.5, duration: 0.5 }"
+        >
+          Silakan daftar untuk proses pembuatan akun</motion.p
+        >
       </div>
 
       <div class="w-full md:w-1/2 p-8 space-y-6">
-        <h1 class="text-2xl font-bold text-center text-primary">Daftar Akun</h1>
-        <form @submit.prevent="handleRegister" class="space-y-4">
+        <motion.h1
+          class="text-2xl font-bold text-center text-primary"
+          :initial="{ y: -20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.6, duration: 0.5 }"
+        >
+          Daftar Akun</motion.h1
+        >
+        <motion.form
+          @submit.prevent="handleRegister"
+          class="space-y-4"
+          :initial="{ opacity: 0 }"
+          :whileInView="{ opacity: 1 }"
+          :transition="{ delay: 0.8, duration: 0.5 }"
+        >
           <div>
             <label for="name" class="block text-gray-700 mb-2">Nama</label>
             <div class="relative">
@@ -211,16 +244,22 @@ const handleRegister = async () => {
           >
             {{ loading ? "Mendaftar..." : "Daftar" }}
           </button>
-        </form>
-        <p class="text-center">
+        </motion.form>
+        <motion.p
+          class="text-center"
+          :initial="{ y: 20, opacity: 0 }"
+          :whileInView="{ y: 0, opacity: 1 }"
+          :transition="{ delay: 0.9, duration: 0.6 }"
+        >
           Sudah memiliki akun?
           <RouterLink
             to="/login"
             class="text-primary hover:text-secondary hover:underline transition-colors"
-            >Login di sini</RouterLink
           >
-        </p>
+            Login di sini</RouterLink
+          >
+        </motion.p>
       </div>
     </div>
-  </div>
+  </motion.div>
 </template>

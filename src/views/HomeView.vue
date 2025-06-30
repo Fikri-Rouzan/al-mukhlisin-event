@@ -136,7 +136,7 @@ const breakpoints = {
       class="rounded-lg overflow-hidden shadow-2xl"
       :initial="{ opacity: 0 }"
       :whileInView="{ opacity: 1 }"
-      :transition="{ duration: 0.6, delay: 0.9 }"
+      :transition="{ delay: 0.7, duration: 0.5 }"
     >
       <Carousel :settings="settings" :breakpoints="breakpoints" dir="ltr">
         <Slide v-for="(image, index) in images" :key="index">
@@ -160,7 +160,7 @@ const breakpoints = {
       class="mt-20 text-4xl font-bold text-primary mb-5 text-center"
       :initial="{ y: -20, opacity: 0 }"
       :whileInView="{ y: 0, opacity: 1 }"
-      :transition="{ delay: 1.1, duration: 0.9 }"
+      :transition="{ delay: 0.9, duration: 0.6 }"
     >
       Kunjungi Masjid Al Mukhlisin
     </motion.h1>
@@ -168,7 +168,7 @@ const breakpoints = {
       class="text-xl text-gray-800 mb-12 text-center"
       :initial="{ y: -20, opacity: 0 }"
       :whileInView="{ y: 0, opacity: 1 }"
-      :transition="{ delay: 1.3, duration: 0.9 }"
+      :transition="{ delay: 1.1, duration: 0.6 }"
     >
       Gunakan peta interaktif dibawah ini untuk mengetahui lokasi Masjid Al
       Mukhlisin
@@ -177,7 +177,7 @@ const breakpoints = {
     <motion.div
       :initial="{ opacity: 0 }"
       :whileInView="{ opacity: 1 }"
-      :transition="{ duration: 1, delay: 1.7 }"
+      :transition="{ delay: 1.3, duration: 0.6 }"
       class="w-full rounded-lg shadow-2xl overflow-hidden border-2 border-gray-200"
     >
       <div ref="mapContainer" class="w-full h-80 md:h-96"></div>
