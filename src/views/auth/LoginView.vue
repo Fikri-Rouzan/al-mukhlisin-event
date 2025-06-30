@@ -22,6 +22,9 @@ onMounted(() => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   }
 });
@@ -51,6 +54,9 @@ const handleLogin = async () => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
 
     if (profile.role === "admin") {
@@ -66,6 +72,9 @@ const handleLogin = async () => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   } finally {
     loading.value = false;

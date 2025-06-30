@@ -21,3 +21,19 @@
 html {
   scroll-behavior: smooth;
 }
+
+.swal-container {
+  z-index: 3000;
+}
+
+.carousel {
+  --vc-nav-background: #e5e7eb;
+  --vc-nav-border-radius: 100%;
+  --vc-nav-width: 36px;
+  --vc-nav-height: 36px;
+  --vc-pgn-active-color: #ffffff;
+  --vc-pgn-background-color: #d1d5dc;
+  --vc-pgn-width: 10px;
+  --vc-pgn-height: 10px;
+  --vc-pgn-border-radius: 50%;
+}

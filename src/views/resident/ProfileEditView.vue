@@ -36,6 +36,9 @@ async function handleUpdateProfile() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   }
 
@@ -65,6 +68,9 @@ async function handleUpdateProfile() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
 
     router.push({ name: "Profile" });
@@ -76,6 +82,9 @@ async function handleUpdateProfile() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   } finally {
     isSaving.value = false;

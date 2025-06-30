@@ -27,6 +27,9 @@ export function useAuth() {
         showConfirmButton: false,
         timer: 2000,
         timerProgressBar: true,
+        customClass: {
+          container: "swal-container",
+        },
       });
       profile.value = null;
     }
@@ -45,6 +48,9 @@ export function useAuth() {
         showConfirmButton: false,
         timer: 2000,
         timerProgressBar: true,
+        customClass: {
+          container: "swal-container",
+        },
       });
 
       user.value = null;
@@ -58,6 +64,9 @@ export function useAuth() {
         showConfirmButton: false,
         timer: 2000,
         timerProgressBar: true,
+        customClass: {
+          container: "swal-container",
+        },
       });
     }
   };

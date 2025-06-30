@@ -58,6 +58,9 @@ async function fetchCommitteeData() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
     router.push({ name: "AdminCommittee" });
   }
@@ -109,6 +112,9 @@ async function handleSave() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
     router.push({ name: "AdminCommittee" });
   } catch (error) {
@@ -119,6 +125,9 @@ async function handleSave() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   } finally {
     isSaving.value = false;
@@ -129,7 +138,7 @@ onMounted(fetchCommitteeData);
 </script>
 
 <template>
-  <div>
+  <div class="px-6 py-4">
     <div class="mb-8">
       <h1 class="text-4xl font-bold">
         {{ isEditMode ? "Edit Data Panitia" : "Tambah Data Panitia" }}

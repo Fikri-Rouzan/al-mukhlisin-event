@@ -2,11 +2,11 @@
 import { RouterLink } from "vue-router";
 const currentYear = new Date().getFullYear();
 
-const addressText =
+const address =
   "Masjid Jami Al Mukhlisin, Jl. Talas III No.54, RT.1/RW.2, Pd. Cabe Ilir, Kec. Pamulang, Kota Tangerang Selatan, Banten 15418";
 
 const googleMapsUrl = `https://maps.google.com/?q=${encodeURIComponent(
-  addressText
+  address
 )}`;
 </script>
 
@@ -15,14 +15,12 @@ const googleMapsUrl = `https://maps.google.com/?q=${encodeURIComponent(
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-xl font-bold text-gray-800 mb-4">Al-Mukhlisin</h3>
-          <p class="text-base">
-            Website informasi kegiatan Masjid Al-Mukhlisin
-          </p>
+          <h3 class="text-lg font-bold text-gray-800 mb-4">Al Mukhlisin</h3>
+          <p class="text-sm">Website informasi kegiatan Masjid Al Mukhlisin</p>
         </div>
 
-        <div class="text-base">
-          <h4 class="font-semibold text-gray-800 mb-4 text-xl">Menu</h4>
+        <div class="text-sm">
+          <h4 class="font-semibold text-gray-800 mb-4 text-lg">Menu</h4>
           <ul class="space-y-2">
             <li>
               <RouterLink to="/" class="hover:text-secondary transition-colors"
@@ -46,8 +44,8 @@ const googleMapsUrl = `https://maps.google.com/?q=${encodeURIComponent(
           </ul>
         </div>
 
-        <div class="text-base">
-          <h4 class="font-semibold text-gray-800 mb-4 text-xl">Alamat</h4>
+        <div class="text-sm">
+          <h4 class="font-semibold text-gray-800 mb-4 text-lg">Alamat</h4>
           <ul>
             <li>
               <a
@@ -56,15 +54,15 @@ const googleMapsUrl = `https://maps.google.com/?q=${encodeURIComponent(
                 rel="noopener noreferrer"
                 class="hover:text-secondary transition-colors"
               >
-                {{ addressText }}
+                {{ address }}
               </a>
             </li>
           </ul>
         </div>
       </div>
 
-      <div class="mt-12 pt-6 text-center text-base">
-        <p>© {{ currentYear }} Al-Mukhlisin. All Rights Reserved</p>
+      <div class="mt-10 border-t border-gray-300 pt-6 text-center text-sm">
+        <p>© {{ currentYear }} Al Mukhlisin. All Rights Reserved</p>
       </div>
     </div>
   </footer>

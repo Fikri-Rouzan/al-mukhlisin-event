@@ -214,6 +214,9 @@ export function useEvents() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   }
 
@@ -225,6 +228,9 @@ export function useEvents() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   }
 
@@ -237,6 +243,9 @@ export function useEvents() {
       confirmButtonColor: "#fb2c36",
       confirmButtonText: "Ya, Hapus!",
       cancelButtonText: "Tidak, Batalkan!",
+      customClass: {
+        container: "swal-container",
+      },
     });
   }
 

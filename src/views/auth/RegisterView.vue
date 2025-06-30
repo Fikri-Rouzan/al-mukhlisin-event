@@ -25,6 +25,9 @@ const handleRegister = async () => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
     return;
   }
@@ -36,6 +39,9 @@ const handleRegister = async () => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
     return;
   }
@@ -66,6 +72,9 @@ const handleRegister = async () => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
     router.push("/login");
   } catch (error) {
@@ -76,6 +85,9 @@ const handleRegister = async () => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   } finally {
     loading.value = false;

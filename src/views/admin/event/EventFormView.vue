@@ -81,6 +81,9 @@ async function fetchInitialData() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
     router.push({ name: "AdminEvents" });
   } finally {
@@ -138,6 +141,9 @@ async function handleSave() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
     router.push({ name: "AdminEvents" });
   } catch (error) {
@@ -148,6 +154,9 @@ async function handleSave() {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   } finally {
     isSaving.value = false;
@@ -158,7 +167,7 @@ onMounted(fetchInitialData);
 </script>
 
 <template>
-  <div>
+  <div class="px-6 py-4">
     <div class="mb-8">
       <h1 class="text-4xl font-bold">
         {{ isEditMode ? "Edit Data Kegiatan" : "Tambah Data Kegiatan" }}

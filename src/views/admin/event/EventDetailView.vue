@@ -25,6 +25,9 @@ onMounted(async () => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   } finally {
     loading.value = false;
@@ -33,7 +36,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="px-6 py-4">
     <button
       @click="router.back()"
       class="mb-6 inline-flex items-center space-x-2 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 cursor-pointer transition-colors"
@@ -89,6 +92,7 @@ onMounted(async () => {
                 timeStyle: "short",
               })
             }}
+            WIB
           </p>
         </div>
 

@@ -27,7 +27,7 @@ onMounted(fetchItems);
 </script>
 
 <template>
-  <div>
+  <div class="px-6 py-4">
     <div class="mb-8">
       <h1 class="text-4xl font-bold">Data Narasumber</h1>
     </div>

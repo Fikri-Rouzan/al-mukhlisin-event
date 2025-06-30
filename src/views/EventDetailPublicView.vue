@@ -29,6 +29,9 @@ onMounted(async () => {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   } finally {
     loading.value = false;

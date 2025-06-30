@@ -26,6 +26,9 @@ async function handleLogout() {
     confirmButtonColor: "#006a4e",
     confirmButtonText: "Ya, Logout!",
     cancelButtonText: "Batal!",
+    customClass: {
+      container: "swal-container",
+    },
   });
 
   if (result.isConfirmed) {
@@ -36,7 +39,7 @@ async function handleLogout() {
 
 <template>
   <header
-    class="fixed top-0 left-0 right-0 bg-primary text-white shadow-lg z-30"
+    class="fixed top-0 left-0 right-0 bg-primary text-white shadow-lg z-[2000]"
   >
     <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
       <RouterLink
@@ -44,7 +47,7 @@ async function handleLogout() {
         class="text-2xl font-bold hover:text-secondary transition-colors"
         @click="closeMenu"
       >
-        Al-Mukhlisin
+        Al Mukhlisin
       </RouterLink>
 
       <div class="hidden md:flex items-center space-x-2">
@@ -104,7 +107,7 @@ async function handleLogout() {
   >
     <div
       v-if="isMenuOpen"
-      class="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-primary text-white p-6 z-40 flex flex-col md:hidden"
+      class="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-primary text-white p-6 z-[2000] flex flex-col md:hidden"
     >
       <div class="flex justify-between items-center mb-8">
         <h2 class="text-xl font-bold">Menu</h2>

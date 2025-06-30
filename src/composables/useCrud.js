@@ -237,6 +237,9 @@ export function useCrud(options) {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   }
 
@@ -248,6 +251,9 @@ export function useCrud(options) {
       showConfirmButton: false,
       timer: 2000,
       timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+      },
     });
   }
 
@@ -260,6 +266,9 @@ export function useCrud(options) {
       confirmButtonColor: "#fb2c36",
       confirmButtonText: "Ya, Hapus!",
       cancelButtonText: "Tidak, Batalkan!",
+      customClass: {
+        container: "swal-container",
+      },
     });
   }
 
