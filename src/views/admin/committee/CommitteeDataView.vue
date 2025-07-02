@@ -96,8 +96,8 @@ onMounted(fetchItems);
                 />
                 <UserCircle2 v-else class="w-10 h-10 text-gray-400" />
               </td>
-              <td class="px-6 py-4">{{ member.name }}</td>
-              <td class="px-6 py-4">{{ member.position }}</td>
+              <td class="px-6 py-4 capitalize">{{ member.name }}</td>
+              <td class="px-6 py-4 capitalize">{{ member.position }}</td>
               <td class="px-6 py-4">{{ member.phone_number }}</td>
               <td class="px-6 py-4 text-right">
                 <router-link

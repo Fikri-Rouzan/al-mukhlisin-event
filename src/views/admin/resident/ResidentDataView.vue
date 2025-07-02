@@ -84,7 +84,7 @@ onMounted(fetchItems);
               :key="resident.id"
               class="hover:bg-gray-50 transition-colors"
             >
-              <td class="px-6 py-4">{{ resident.name }}</td>
+              <td class="px-6 py-4 capitalize">{{ resident.name }}</td>
               <td class="px-6 py-4">{{ resident.email }}</td>
               <td class="px-6 py-4 text-right">
                 <router-link

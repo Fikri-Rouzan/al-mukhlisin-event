@@ -100,7 +100,7 @@ function formatDateTime(dateString) {
           :initial="{ y: -20, opacity: 0 }"
           :whileInView="{ y: 0, opacity: 1 }"
           :transition="{ delay: 0.6, duration: 0.5 }"
-          class="text-4xl text-center md:text-5xl font-bold text-gray-800"
+          class="text-4xl text-center md:text-5xl font-bold text-gray-800 capitalize"
         >
           {{ event.details.name }}
         </motion.h1>
@@ -112,7 +112,7 @@ function formatDateTime(dateString) {
           :transition="{ delay: 0.8, duration: 0.5 }"
         >
           <p class="text-lg font-semibold text-gray-500 mb-1">Kategori</p>
-          <p class="text-md text-gray-800">
+          <p class="text-md text-gray-800 capitalize">
             {{ event.details.category }}
           </p>
         </motion.div>
@@ -176,7 +176,7 @@ function formatDateTime(dateString) {
               />
               <UserCircle2 v-else class="w-16 h-16 text-gray-400" />
               <div>
-                <h3 class="font-semibold text-lg text-gray-800">
+                <h3 class="font-semibold text-lg text-gray-800 capitalize">
                   {{ speaker.name }}
                 </h3>
               </div>

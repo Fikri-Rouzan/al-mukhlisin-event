@@ -23,6 +23,7 @@ import SpeakersDetailView from "../views/admin/speaker/SpeakersDetailView.vue";
 import EventsDataView from "../views/admin/event/EventsDataView.vue";
 import EventFormView from "../views/admin/event/EventFormView.vue";
 import EventDetailView from "../views/admin/event/EventDetailView.vue";
+import HelpView from "../views/admin/help/HelpView.vue";
 
 const routes = [
   {
@@ -149,6 +150,11 @@ const routes = [
         path: "events/:id",
         name: "AdminEventDetail",
         component: EventDetailView,
+      },
+      {
+        path: "help",
+        name: "AdminHelp",
+        component: HelpView,
       },
     ],
   },

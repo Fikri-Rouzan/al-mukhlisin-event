@@ -71,7 +71,7 @@ onMounted(async () => {
         <div class="w-full text-center md:text-left">
           <div class="space-y-6">
             <div>
-              <p class="text-2xl sm:text-3xl font-bold text-primary">
+              <p class="text-2xl sm:text-3xl font-bold text-primary capitalize">
                 {{ member.name }}
               </p>
             </div>
@@ -84,7 +84,7 @@ onMounted(async () => {
               >
                 Jabatan
               </h3>
-              <p class="text-lg text-gray-800">
+              <p class="text-lg text-gray-800 capitalize">
                 {{ member.position }}
               </p>
             </div>

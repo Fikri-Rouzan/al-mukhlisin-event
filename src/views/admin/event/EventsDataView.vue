@@ -93,8 +93,8 @@ onMounted(fetchAllData);
                   <Image v-else class="w-6 h-6 text-gray-400" />
                 </div>
               </td>
-              <td class="px-6 py-4 font-medium">{{ event.name }}</td>
-              <td class="px-6 py-4">{{ event.category }}</td>
+              <td class="px-6 py-4 font-medium capitalize">{{ event.name }}</td>
+              <td class="px-6 py-4 capitalize">{{ event.category }}</td>
               <td class="px-6 py-4">
                 {{
                   new Date(event.event_date).toLocaleString("id-ID", {

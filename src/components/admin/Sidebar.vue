@@ -1,6 +1,14 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { Users, Shield, Mic, CalendarDays, LogOut, X } from "lucide-vue-next";
+import {
+  Users,
+  Shield,
+  Mic,
+  CalendarDays,
+  HelpCircle,
+  LogOut,
+  X,
+} from "lucide-vue-next";
 import Swal from "sweetalert2";
 
 const props = defineProps({
@@ -82,7 +90,16 @@ const confirmLogout = () => {
       </RouterLink>
     </nav>
 
-    <div class="p-4 border-t border-gray-700">
+    <div class="p-4 border-t border-gray-700 space-y-2 overflow-y-auto">
+      <RouterLink
+        :to="{ name: 'AdminHelp' }"
+        @click="closeSidebar"
+        class="admin-help w-full flex items-center p-2 space-x-3 rounded-lg hover:bg-gray-600 transition-colors"
+      >
+        <HelpCircle :size="20" />
+        <span>Panduan</span>
+      </RouterLink>
+
       <button
         @click="confirmLogout"
         class="w-full flex items-center p-2 bg-red-500 space-x-3 rounded-lg hover:bg-red-800 transition-colors cursor-pointer"

@@ -96,13 +96,13 @@ onMounted(async () => {
           </div>
 
           <div class="p-6 flex flex-col">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 capitalize">
               {{ event.name }}
             </h2>
 
             <div class="mb-4">
               <p class="text-md text-gray-500 font-semibold">Kategori</p>
-              <p class="text-md text-gray-800">
+              <p class="text-md text-gray-800 capitalize">
                 {{ event.category }}
               </p>
             </div>

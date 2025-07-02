@@ -65,7 +65,7 @@ const userInitials = computed(() => {
                 :initial="{ y: -20, opacity: 0 }"
                 :whileInView="{ y: 0, opacity: 1 }"
                 :transition="{ delay: 0.6, duration: 0.5 }"
-                class="text-xl font-semibold text-gray-900 text-center"
+                class="text-xl font-semibold text-gray-900 text-center capitalize"
               >
                 {{ profile.name }}
               </motion.h2>
@@ -101,7 +101,7 @@ const userInitials = computed(() => {
               :transition="{ delay: 0.9, duration: 0.6 }"
             >
               <p class="block text-sm font-medium text-gray-500">Nama</p>
-              <p class="text-lg text-gray-800">{{ profile.name }}</p>
+              <p class="text-lg text-gray-800 capitalize">{{ profile.name }}</p>
             </motion.div>
 
             <motion.div

@@ -65,7 +65,7 @@ onMounted(async () => {
 
       <div class="space-y-6">
         <div class="text-center">
-          <p class="text-4xl sm:text-5xl font-bold text-primary">
+          <p class="text-4xl sm:text-5xl font-bold text-primary capitalize">
             {{ event.details.name }}
           </p>
         </div>
@@ -76,7 +76,9 @@ onMounted(async () => {
           >
             Kategori
           </h3>
-          <p class="text-lg text-gray-800">{{ event.details.category }}</p>
+          <p class="text-lg text-gray-800 capitalize">
+            {{ event.details.category }}
+          </p>
         </div>
 
         <div class="text-left space-y-1">
@@ -126,7 +128,7 @@ onMounted(async () => {
                 alt="Speaker Photo"
               />
               <UserCircle2 v-else class="w-11 h-11 text-gray-400" />
-              <span>{{ speaker.name }}</span>
+              <span class="capitalize">{{ speaker.name }}</span>
             </li>
           </ul>
           <p v-else class="text-gray-500">
@@ -149,7 +151,7 @@ onMounted(async () => {
                 alt="Committee Photo"
               />
               <UserCircle2 v-else class="w-11 h-11 text-gray-400" />
-              <span>{{ c.name }} ({{ c.position }})</span>
+              <span class="capitalize">{{ c.name }} ({{ c.position }})</span>
             </li>
           </ul>
           <p v-else class="text-gray-500">Tidak ada panitia yang terdaftar</p>
