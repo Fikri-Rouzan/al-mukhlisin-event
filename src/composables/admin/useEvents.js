@@ -133,9 +133,6 @@ export function useEvents() {
     }
   }
 
-  /**
-   * Menghapus data via Edge Function.
-   */
   async function deleteItem(event) {
     const { isConfirmed } = await showConfirmDialog(
       "Anda Yakin?",
