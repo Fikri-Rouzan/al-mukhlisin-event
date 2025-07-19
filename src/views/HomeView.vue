@@ -1,110 +1,44 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import L from "leaflet";
-import markerIcon from "../assets/marker/marker-icon-2x.png";
-import markerIcon2x from "../assets/marker/marker-icon.png";
-import markerShadow from "../assets/marker/marker-shadow.png";
-import photo from "../assets/marker/photo.png";
+import { computed } from "vue";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-import { images } from "../assets/assets.js";
 import { motion } from "motion-v";
+import { useMap } from "../composables/useMap.js";
+import { images } from "../assets/assets.js";
+import { settings, breakpoints } from "../config/carousel.js";
+import photo from "../assets/marker/photo.png";
 
-const coordinates = [-6.334059734631284, 106.7607639436645];
-const name = "Masjid Al Mukhlisin";
-const address =
-  "Masjid Jami Al Mukhlisin, Jl. Talas III No.54, RT.1/RW.2, Pd. Cabe Ilir, Kec. Pamulang, Kota Tangerang Selatan, Banten 15418";
+import "vue3-carousel/carousel.css";
 
-const googleMapsUrl = `https://maps.google.com/?q=${encodeURIComponent(
-  address
-)}`;
+const locationData = {
+  coordinates: [-6.334059734631284, 106.7607639436645],
+  name: "Masjid Al Mukhlisin",
+  address:
+    "Masjid Jami Al Mukhlisin, Jl. Talas III No.54, RT.1/RW.2, Pd. Cabe Ilir, Kec. Pamulang, Kota Tangerang Selatan, Banten 15418",
+};
 
-const mapContainer = ref(null);
+const googleMapsUrl = computed(
+  () =>
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      locationData.address
+    )}`
+);
 
-onMounted(() => {
-  if (mapContainer.value) {
-    delete L.Icon.Default.prototype._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: markerIcon2x,
-      iconUrl: markerIcon,
-      shadowUrl: markerShadow,
-    });
+const popupContent = computed(
+  () => `
+  <div class="flex flex-col items-center max-w-40">
+    <h3 class="text-base font-semibold text-gray-500 mb-3">${locationData.name}</h3>
+    <img src="${photo}" alt="Foto ${locationData.name}" class="w-28 h-28 rounded-md shadow-md mb-3" />
+    <a href="${googleMapsUrl.value}" target="_blank" rel="noopener noreferrer" class="text-xs text-center hover:underline">
+      ${locationData.address}
+    </a>
+  </div>
+`
+);
 
-    const osmLayer = L.tileLayer(
-      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {
-        attribution: "© OpenStreetMap contributors",
-      }
-    );
-
-    const satelliteLayer = L.tileLayer(
-      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      {
-        attribution: "© OpenStreetMap contributors",
-      }
-    );
-
-    const darkLayer = L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-      {
-        attribution: "© OpenStreetMap contributors",
-      }
-    );
-
-    const baseLayers = {
-      Standar: osmLayer,
-      Satelit: satelliteLayer,
-      "Mode Gelap": darkLayer,
-    };
-
-    const map = L.map(mapContainer.value, {
-      layers: [osmLayer],
-    }).setView(coordinates, 17);
-
-    L.control.layers(baseLayers, null).addTo(map);
-
-    const popupContent = `
-      <div class="flex flex-col items-center max-w-40">
-        <h3 class="text-base font-semibold text-gray-500 mb-3">
-          ${name}
-        </h3>
-        <img
-          src="${photo}"
-          alt="Foto ${name}"
-          class="w-28 h-28 rounded-md shadow-md mb-3"
-        />
-        <a
-          href="${googleMapsUrl}"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-xs hover:underline"
-        >
-          ${address}
-        </a>
-      </div>
-    `;
-
-    L.marker(coordinates).addTo(map).bindPopup(popupContent);
-  }
+const { mapContainer } = useMap({
+  coordinates: locationData.coordinates,
+  popupContent: popupContent.value,
 });
-
-const settings = {
-  itemsToShow: 1,
-  snapAlign: "center",
-  autoplay: 7000,
-  wrapAround: true,
-  transition: 800,
-};
-
-const breakpoints = {
-  1024: {
-    itemsToShow: 2,
-    snapAlign: "center",
-    autoplay: 7000,
-    wrapAround: true,
-    transition: 800,
-    gap: 6,
-  },
-};
 </script>
 
 <template>
@@ -129,7 +63,7 @@ const breakpoints = {
       :transition="{ delay: 0.5, duration: 0.5 }"
     >
       Website ini menyediakan berbagai macam informasi kegiatan yang akan
-      diselenggarakan di Masjid Al Mukhlisin
+      diselenggarakan di Masjid Al Mukhlisin.
     </motion.p>
 
     <motion.div
@@ -148,7 +82,6 @@ const breakpoints = {
             />
           </div>
         </Slide>
-
         <template #addons>
           <Navigation />
           <Pagination />
@@ -170,8 +103,8 @@ const breakpoints = {
       :whileInView="{ y: 0, opacity: 1 }"
       :transition="{ delay: 1.1, duration: 0.6 }"
     >
-      Gunakan peta interaktif dibawah ini untuk mengetahui lokasi Masjid Al
-      Mukhlisin
+      Gunakan peta interaktif di bawah ini untuk mengetahui lokasi Masjid Al
+      Mukhlisin.
     </motion.p>
 
     <motion.div

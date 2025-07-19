@@ -20,7 +20,7 @@ const userInitials = computed(() => {
 
 <template>
   <motion.div
-    class="flex items-center min-h-[75vh]"
+    class="flex items-center min-h-screen"
     :initial="{ opacity: 0 }"
     :whileInView="{ opacity: 1 }"
     :transition="{ duration: 1 }"

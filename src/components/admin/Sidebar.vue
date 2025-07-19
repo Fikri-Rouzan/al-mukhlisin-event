@@ -11,17 +11,25 @@ import {
 } from "lucide-vue-next";
 import Swal from "sweetalert2";
 
-const props = defineProps({
+defineProps({
   isOpen: Boolean,
-  logout: Function,
-  closeSidebar: Function,
 });
 
+const emit = defineEmits(["close", "logout"]);
+
+const navItems = [
+  { to: "/admin/residents", icon: Users, label: "Data Warga" },
+  { to: "/admin/committee", icon: Shield, label: "Data Panitia" },
+  { to: "/admin/speakers", icon: Mic, label: "Data Narasumber" },
+  { to: "/admin/events", icon: CalendarDays, label: "Data Kegiatan" },
+];
+
 const confirmLogout = () => {
-  props.closeSidebar();
+  emit("close");
+
   Swal.fire({
     title: "Ingin Logout?",
-    text: "Anda akan keluar dari akun ini",
+    text: "Anda akan keluar dari akun ini.",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#006a4e",
@@ -32,7 +40,7 @@ const confirmLogout = () => {
     },
   }).then((result) => {
     if (result.isConfirmed) {
-      props.logout();
+      emit("logout");
     }
   });
 };
@@ -49,51 +57,33 @@ const confirmLogout = () => {
     <div class="p-4 border-b border-gray-700 flex justify-between items-center">
       <RouterLink
         to="/admin/residents"
-        @click="closeSidebar"
+        @click="$emit('close')"
         class="text-xl font-bold hover:text-secondary transition-colors cursor-pointer"
       >
         Dashboard Admin
       </RouterLink>
-      <button @click="closeSidebar" class="md:hidden">
+      <button @click="$emit('close')" class="md:hidden">
         <X class="w-6 h-6" />
       </button>
     </div>
 
     <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
       <RouterLink
-        to="/admin/residents"
-        @click="closeSidebar"
+        v-for="item in navItems"
+        :key="item.to"
+        :to="item.to"
+        @click="$emit('close')"
         class="admin-nav-item flex items-center p-2 space-x-3 rounded-lg hover:bg-secondary transition-colors"
       >
-        <Users :size="20" /><span>Data Warga</span>
-      </RouterLink>
-      <RouterLink
-        to="/admin/committee"
-        @click="closeSidebar"
-        class="admin-nav-item flex items-center p-2 space-x-3 rounded-lg hover:bg-secondary transition-colors"
-      >
-        <Shield :size="20" /><span>Data Panitia</span>
-      </RouterLink>
-      <RouterLink
-        to="/admin/speakers"
-        @click="closeSidebar"
-        class="admin-nav-item flex items-center p-2 space-x-3 rounded-lg hover:bg-secondary transition-colors"
-      >
-        <Mic :size="20" /><span>Data Narasumber</span>
-      </RouterLink>
-      <RouterLink
-        to="/admin/events"
-        @click="closeSidebar"
-        class="admin-nav-item flex items-center p-2 space-x-3 rounded-lg hover:bg-secondary transition-colors"
-      >
-        <CalendarDays :size="20" /><span>Data Kegiatan</span>
+        <component :is="item.icon" :size="20" />
+        <span>{{ item.label }}</span>
       </RouterLink>
     </nav>
 
-    <div class="p-4 border-t border-gray-700 space-y-2 overflow-y-auto">
+    <div class="p-4 border-t border-gray-700 space-y-2">
       <RouterLink
         :to="{ name: 'AdminHelp' }"
-        @click="closeSidebar"
+        @click="$emit('close')"
         class="admin-help w-full flex items-center p-2 space-x-3 rounded-lg hover:bg-gray-600 transition-colors"
       >
         <HelpCircle :size="20" />

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from "vue";
-import { useEvents } from "../../../composables/useEvents";
+import { useEvents } from "../../../composables/admin/useEvents";
 import { Pencil, Trash2, Eye, Image, Search } from "lucide-vue-next";
 import Pagination from "../../../components/admin/Pagination.vue";
 

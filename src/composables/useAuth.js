@@ -1,4 +1,4 @@
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
@@ -6,86 +6,74 @@ import Swal from "sweetalert2";
 const user = ref(null);
 const profile = ref(null);
 
-export function useAuth() {
-  const router = useRouter();
+const showNotification = (options) => {
+  const baseOptions = {
+    timer: 2000,
+    timerProgressBar: true,
+    customClass: {
+      container: "swal-container",
+    },
+  };
+  Swal.fire({ ...baseOptions, ...options });
+};
 
-  const fetchProfile = async (userId) => {
+supabase.auth.onAuthStateChange(async (event, session) => {
+  const currentUser = session?.user || null;
+  user.value = currentUser;
+
+  if (currentUser) {
     try {
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", userId)
+        .eq("id", currentUser.id)
         .single();
 
       if (error) throw error;
       profile.value = data;
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal Mengambil Profil Pengguna!",
-        text: error.message,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        customClass: {
-          container: "swal-container",
-        },
-      });
       profile.value = null;
+      console.error("Gagal mengambil profil:", error.message);
+      showNotification({
+        icon: "error",
+        title: "Gagal Memuat Profil!",
+        text: "Terjadi masalah saat mengambil data profil Anda.",
+      });
     }
-  };
+  } else {
+    profile.value = null;
+  }
+});
+
+export function useAuth() {
+  const router = useRouter();
 
   const logout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
-      Swal.fire({
+      showNotification({
         toast: true,
         position: "top-end",
         icon: "success",
         title: "Logout Berhasil!",
         showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        customClass: {
-          container: "swal-container",
-        },
       });
 
-      user.value = null;
-      profile.value = null;
       router.push("/");
     } catch (error) {
-      Swal.fire({
+      showNotification({
         icon: "error",
         title: "Logout Gagal!",
         text: error.message,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        customClass: {
-          container: "swal-container",
-        },
       });
     }
   };
-
-  onMounted(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      user.value = session?.user || null;
-      if (user.value) {
-        await fetchProfile(user.value.id);
-      } else {
-        profile.value = null;
-      }
-    });
-  });
 
   return {
     user,
     profile,
     logout,
-    fetchProfile,
   };
 }

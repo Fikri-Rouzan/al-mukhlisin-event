@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { supabase } from "../../../lib/supabase";
 import Swal from "sweetalert2";
-import { Eye, EyeOff, User, Mail, Lock, ChevronLeft } from "lucide-vue-next";
+import { Eye, EyeOff, User, Mail, Lock } from "lucide-vue-next";
 
 const route = useRoute();
 const router = useRouter();

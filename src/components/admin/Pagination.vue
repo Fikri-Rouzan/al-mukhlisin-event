@@ -15,6 +15,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  siblingCount: {
+    type: Number,
+    default: 1,
+  },
 });
 
 const emit = defineEmits(["page-changed", "update:rowsPerPage"]);
@@ -22,6 +26,51 @@ const emit = defineEmits(["page-changed", "update:rowsPerPage"]);
 const totalPages = computed(() => {
   if (props.totalItems === 0) return 1;
   return Math.ceil(props.totalItems / props.rowsPerPage);
+});
+
+const paginationRange = computed(() => {
+  const totalVisibleButtons = props.siblingCount + 5;
+
+  if (totalPages.value <= totalVisibleButtons) {
+    return Array.from({ length: totalPages.value }, (_, i) => i + 1);
+  }
+
+  const leftSiblingIndex = Math.max(props.currentPage - props.siblingCount, 1);
+  const rightSiblingIndex = Math.min(
+    props.currentPage + props.siblingCount,
+    totalPages.value
+  );
+
+  const shouldShowLeftDots = leftSiblingIndex > 2;
+  const shouldShowRightDots = rightSiblingIndex < totalPages.value - 2;
+
+  const firstPageIndex = 1;
+  const lastPageIndex = totalPages.value;
+
+  if (!shouldShowLeftDots && shouldShowRightDots) {
+    let leftItemCount = 3 + 2 * props.siblingCount;
+    let leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1);
+    return [...leftRange, "...", lastPageIndex];
+  }
+
+  if (shouldShowLeftDots && !shouldShowRightDots) {
+    let rightItemCount = 3 + 2 * props.siblingCount;
+    let rightRange = Array.from(
+      { length: rightItemCount },
+      (_, i) => totalPages.value - rightItemCount + i + 1
+    );
+    return [firstPageIndex, "...", ...rightRange];
+  }
+
+  if (shouldShowLeftDots && shouldShowRightDots) {
+    let middleRange = Array.from(
+      { length: rightSiblingIndex - leftSiblingIndex + 1 },
+      (_, i) => leftSiblingIndex + i
+    );
+    return [firstPageIndex, "...", ...middleRange, "...", lastPageIndex];
+  }
+
+  return [];
 });
 
 function changePage(page) {
@@ -32,6 +81,7 @@ function changePage(page) {
 
 function onRowsPerPageChange(event) {
   emit("update:rowsPerPage", Number(event.target.value));
+  changePage(1);
 }
 </script>
 
@@ -50,6 +100,7 @@ function onRowsPerPageChange(event) {
         >
           <option value="5">5</option>
           <option value="10">10</option>
+          <option value="20">20</option>
         </select>
       </div>
       <span class="text-gray-600 hidden sm:block">
@@ -74,19 +125,24 @@ function onRowsPerPageChange(event) {
         <ChevronLeft class="w-4 h-4" />
       </button>
 
-      <button
-        v-for="page in totalPages"
-        :key="page"
-        @click="changePage(page)"
-        :class="[
-          'px-4 py-2 rounded-md transition-colors cursor-pointer',
-          currentPage === page
-            ? 'bg-primary text-white font-bold cursor-default'
-            : 'bg-white text-gray-700 hover:bg-gray-200',
-        ]"
-      >
-        {{ page }}
-      </button>
+      <template v-for="(item, index) in paginationRange" :key="index">
+        <span v-if="typeof item === 'string'" class="px-4 py-2 text-gray-500">
+          ...
+        </span>
+
+        <button
+          v-else
+          @click="changePage(item)"
+          :class="[
+            'px-4 py-2 rounded-md transition-colors cursor-pointer',
+            currentPage === item
+              ? 'bg-primary text-white font-bold cursor-default'
+              : 'bg-white text-gray-700 hover:bg-gray-200',
+          ]"
+        >
+          {{ item }}
+        </button>
+      </template>
 
       <button
         @click="changePage(currentPage + 1)"

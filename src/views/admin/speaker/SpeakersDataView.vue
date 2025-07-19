@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from "vue";
-import { useCrud } from "../../../composables/useCrud";
+import { useCrud } from "../../../composables/admin/useCrud";
 import { Pencil, Trash2, Eye, UserCircle2, Search } from "lucide-vue-next";
 import Pagination from "../../../components/admin/Pagination.vue";
 
@@ -9,6 +9,7 @@ const config = {
   singularName: "narasumber",
   supabaseFunction: "manage-speaker",
   storageName: "speaker-photos",
+  searchColumn: "name",
 };
 
 const {

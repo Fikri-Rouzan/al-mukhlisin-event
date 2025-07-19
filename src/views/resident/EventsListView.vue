@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../../lib/supabase";
 import { RouterLink } from "vue-router";
 import Swal from "sweetalert2";
 import { Image, ArrowRight } from "lucide-vue-next";

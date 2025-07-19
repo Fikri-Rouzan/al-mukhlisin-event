@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { RouterLink } from "vue-router";
 import { useAuth } from "../composables/useAuth";
 import { Home, Calendar, User, Menu, X, LogIn, LogOut } from "lucide-vue-next";
@@ -20,7 +20,7 @@ async function handleLogout() {
   closeMenu();
   const result = await Swal.fire({
     title: "Ingin Logout?",
-    text: "Anda akan keluar dari akun ini",
+    text: "Anda akan keluar dari akun ini.",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#006a4e",
@@ -35,6 +35,26 @@ async function handleLogout() {
     await logout();
   }
 }
+
+const navLinks = computed(() => {
+  const baseLinks = [
+    { text: "Beranda", to: "/", icon: Home, type: "link" },
+    { text: "Kegiatan", to: "/events", icon: Calendar, type: "link" },
+    { text: "Profil", to: "/profile", icon: User, type: "link" },
+  ];
+
+  if (user.value) {
+    return [
+      ...baseLinks,
+      { text: "Logout", action: handleLogout, icon: LogOut, type: "button" },
+    ];
+  } else {
+    return [
+      ...baseLinks,
+      { text: "Login", to: "/login", icon: LogIn, type: "link" },
+    ];
+  }
+});
 </script>
 
 <template>
@@ -51,42 +71,24 @@ async function handleLogout() {
       </RouterLink>
 
       <div class="hidden md:flex items-center space-x-2">
-        <RouterLink
-          to="/"
-          class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors"
-        >
-          <Home :size="18" />
-          <span>Beranda</span>
-        </RouterLink>
-        <RouterLink
-          to="/events"
-          class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors"
-        >
-          <Calendar :size="18" />
-          <span>Kegiatan</span>
-        </RouterLink>
-        <RouterLink
-          to="/profile"
-          class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors"
-        >
-          <User :size="18" />
-          <span>Profil</span>
-        </RouterLink>
-        <RouterLink
-          v-if="!user"
-          to="/login"
-          class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors"
-        >
-          <LogIn :size="18" />
-          <span>Login</span>
-        </RouterLink>
-        <button
-          v-else
-          @click="handleLogout"
-          class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors cursor-pointer"
-        >
-          <LogOut :size="18" /> <span>Logout</span>
-        </button>
+        <template v-for="link in navLinks" :key="link.text">
+          <RouterLink
+            v-if="link.type === 'link'"
+            :to="link.to"
+            class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors"
+          >
+            <component :is="link.icon" :size="18" />
+            <span>{{ link.text }}</span>
+          </RouterLink>
+          <button
+            v-else
+            @click="link.action"
+            class="nav-item flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-secondary transition-colors cursor-pointer"
+          >
+            <component :is="link.icon" :size="18" />
+            <span>{{ link.text }}</span>
+          </button>
+        </template>
       </div>
 
       <div class="md:hidden">
@@ -117,47 +119,25 @@ async function handleLogout() {
       </div>
 
       <nav class="flex flex-col space-y-6">
-        <RouterLink
-          to="/"
-          @click="closeMenu"
-          class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
-        >
-          <Home :size="22" />
-          <span>Beranda</span>
-        </RouterLink>
-        <RouterLink
-          to="/events"
-          @click="closeMenu"
-          class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
-        >
-          <Calendar :size="22" />
-          <span>Kegiatan</span>
-        </RouterLink>
-        <RouterLink
-          to="/profile"
-          @click="closeMenu"
-          class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
-        >
-          <User :size="22" />
-          <span>Profil</span>
-        </RouterLink>
-        <RouterLink
-          v-if="!user"
-          to="/login"
-          @click="closeMenu"
-          class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
-        >
-          <LogIn :size="22" />
-          <span>Login</span>
-        </RouterLink>
-        <button
-          v-else
-          @click="handleLogout"
-          class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
-        >
-          <LogOut :size="22" />
-          <span>Logout</span>
-        </button>
+        <template v-for="link in navLinks" :key="link.text">
+          <RouterLink
+            v-if="link.type === 'link'"
+            :to="link.to"
+            @click="closeMenu"
+            class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
+          >
+            <component :is="link.icon" :size="22" />
+            <span>{{ link.text }}</span>
+          </RouterLink>
+          <button
+            v-else
+            @click="link.action"
+            class="flex items-center space-x-3 text-lg hover:text-secondary transition-colors"
+          >
+            <component :is="link.icon" :size="22" />
+            <span>{{ link.text }}</span>
+          </button>
+        </template>
       </nav>
     </div>
   </Transition>

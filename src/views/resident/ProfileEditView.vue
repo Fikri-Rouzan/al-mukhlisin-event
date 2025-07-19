@@ -95,7 +95,7 @@ async function handleUpdateProfile() {
 
 <template>
   <motion.div
-    class="flex items-center justify-center min-h-[75vh]"
+    class="flex items-center justify-center min-h-screen"
     :initial="{ opacity: 0 }"
     :whileInView="{ opacity: 1 }"
     :transition="{ duration: 1 }"

@@ -301,6 +301,7 @@ onMounted(fetchInitialData);
             placeholder="Pilih panitia"
             name="committee"
             class="mt-1"
+            open-direction="bottom"
           />
         </div>
 
@@ -316,6 +317,7 @@ onMounted(fetchInitialData);
             placeholder="Pilih narasumber"
             name="speakers"
             class="mt-1"
+            open-direction="bottom"
           />
         </div>
 

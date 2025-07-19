@@ -8,7 +8,9 @@ async function createAdminUser() {
   const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (!supabaseUrl || !serviceKey || !adminEmail || !adminPassword) {
-    console.error("Error: Missing required environment variables");
+    console.error(
+      "Error: Environment variables yang dibutuhkan tidak lengkap."
+    );
     process.exit(1);
   }
 
@@ -19,7 +21,7 @@ async function createAdminUser() {
     },
   });
 
-  console.log("Creating admin...");
+  console.log("Mencoba membuat admin...");
 
   try {
     const { data, error } = await supabaseAdmin.auth.admin.createUser({
@@ -32,16 +34,16 @@ async function createAdminUser() {
     });
 
     if (error) {
-      if (error.message.includes("Admin already exists")) {
-        console.warn("Admin already exists. Skipping creation");
+      if (error.message.includes("User already registered")) {
+        console.warn("⚠️ Admin sudah ada. Proses pembuatan dilewati.");
         return;
       }
       throw error;
     }
 
-    console.log("✅ Admin created successfully");
+    console.log("✅ Admin berhasil dibuat.");
   } catch (error) {
-    console.error("❌ Error creating admin:", error.message);
+    console.error("❌ Gagal membuat admin:", error.message);
     process.exit(1);
   }
 }

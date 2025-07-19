@@ -1,168 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { supabase } from "../lib/supabase";
 
-import PublicLayout from "../layouts/PublicLayout.vue";
-import AdminLayout from "../layouts/AdminLayout.vue";
-
-import HomeView from "../views/HomeView.vue";
-import LoginView from "../views/auth/LoginView.vue";
-import RegisterView from "../views/auth/RegisterView.vue";
-import EventsListView from "../views/EventsListView.vue";
-import EventDetailPublicView from "../views/EventDetailPublicView.vue";
-import ProfileView from "../views/resident/ProfileView.vue";
-import ProfileEditView from "../views/resident/ProfileEditView.vue";
-
-import ResidentDataView from "../views/admin/resident/ResidentDataView.vue";
-import ResidentFormView from "../views/admin/resident/ResidentFormView.vue";
-import CommitteeDataView from "../views/admin/committee/CommitteeDataView.vue";
-import CommitteeFormView from "../views/admin/committee/CommitteeFormView.vue";
-import CommitteeDetailView from "../views/admin/committee/CommitteeDetailView.vue";
-import SpeakersDataView from "../views/admin/speaker/SpeakersDataView.vue";
-import SpeakersFormView from "../views/admin/speaker/SpeakersFormView.vue";
-import SpeakersDetailView from "../views/admin/speaker/SpeakersDetailView.vue";
-import EventsDataView from "../views/admin/event/EventsDataView.vue";
-import EventFormView from "../views/admin/event/EventFormView.vue";
-import EventDetailView from "../views/admin/event/EventDetailView.vue";
-import HelpView from "../views/admin/help/HelpView.vue";
-
-const routes = [
-  {
-    path: "/",
-    component: PublicLayout,
-    children: [
-      {
-        path: "",
-        name: "Home",
-        component: HomeView,
-      },
-      {
-        path: "login",
-        name: "Login",
-        component: LoginView,
-        meta: { requiresGuest: true },
-      },
-      {
-        path: "register",
-        name: "Register",
-        component: RegisterView,
-        meta: { requiresGuest: true },
-      },
-      {
-        path: "profile",
-        name: "Profile",
-        component: ProfileView,
-        meta: { requiresAuth: true, role: "resident" },
-      },
-      {
-        path: "profile/edit",
-        name: "ProfileEdit",
-        component: ProfileEditView,
-        meta: { requiresAuth: true, role: "resident" },
-      },
-      {
-        path: "events",
-        name: "EventsList",
-        component: EventsListView,
-      },
-      {
-        path: "events/:id",
-        name: "EventDetailPublic",
-        component: EventDetailPublicView,
-      },
-    ],
-  },
-  {
-    path: "/admin",
-    component: AdminLayout,
-    meta: { requiresAuth: true, role: "admin" },
-    children: [
-      {
-        path: "residents",
-        name: "AdminResidents",
-        component: ResidentDataView,
-      },
-      {
-        path: "residents/create",
-        name: "AdminResidentsCreate",
-        component: ResidentFormView,
-      },
-      {
-        path: "residents/edit/:id",
-        name: "AdminResidentsEdit",
-        component: ResidentFormView,
-      },
-      {
-        path: "committee",
-        name: "AdminCommittee",
-        component: CommitteeDataView,
-      },
-      {
-        path: "committee/create",
-        name: "AdminCommitteeCreate",
-        component: CommitteeFormView,
-      },
-      {
-        path: "committee/edit/:id",
-        name: "AdminCommitteeEdit",
-        component: CommitteeFormView,
-      },
-      {
-        path: "committee/:id",
-        name: "AdminCommitteeDetail",
-        component: CommitteeDetailView,
-      },
-      {
-        path: "speakers",
-        name: "AdminSpeakers",
-        component: SpeakersDataView,
-      },
-      {
-        path: "speakers/create",
-        name: "AdminSpeakersCreate",
-        component: SpeakersFormView,
-      },
-      {
-        path: "speakers/edit/:id",
-        name: "AdminSpeakersEdit",
-        component: SpeakersFormView,
-      },
-      {
-        path: "speakers/:id",
-        name: "AdminSpeakerDetail",
-        component: SpeakersDetailView,
-      },
-      {
-        path: "events",
-        name: "AdminEvents",
-        component: EventsDataView,
-      },
-      {
-        path: "events/create",
-        name: "AdminEventsCreate",
-        component: EventFormView,
-      },
-      {
-        path: "events/edit/:id",
-        name: "AdminEventsEdit",
-        component: EventFormView,
-      },
-      {
-        path: "events/:id",
-        name: "AdminEventDetail",
-        component: EventDetailView,
-      },
-      {
-        path: "help",
-        name: "AdminHelp",
-        component: HelpView,
-      },
-    ],
-  },
-];
+import publicRoutes from "./publicRoutes";
+import adminRoutes from "./adminRoutes";
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes: [publicRoutes, adminRoutes],
 
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
@@ -178,6 +22,7 @@ router.beforeEach(async (to, from, next) => {
     data: { session },
   } = await supabase.auth.getSession();
   const user = session?.user;
+  let userRole = null;
 
   if (user) {
     const { data: profile } = await supabase
@@ -185,39 +30,26 @@ router.beforeEach(async (to, from, next) => {
       .select("role")
       .eq("id", user.id)
       .single();
+    userRole = profile?.role;
+  }
 
-    if (profile?.role === "admin" && !to.path.startsWith("/admin")) {
-      return next("/admin/residents");
-    }
+  const isUserAdmin = userRole === "admin";
+  const isGoingToAdminArea = to.path.startsWith("/admin");
+
+  if (isUserAdmin && !isGoingToAdminArea) {
+    return next({ name: "AdminResidents" });
   }
 
   if (to.meta.requiresGuest && user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-    if (profile?.role === "admin") {
-      return next("/admin/residents");
-    }
-    return next("/");
+    return next({ name: isUserAdmin ? "AdminResidents" : "Home" });
   }
 
   if (to.meta.requiresAuth) {
     if (!user) {
       return next({ path: "/login", query: { redirected_from: to.fullPath } });
     }
-
-    if (to.meta.role) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-      if (profile?.role !== to.meta.role) {
-        if (profile?.role === "admin") return next("/admin/residents");
-        return next("/");
-      }
+    if (to.meta.role && to.meta.role !== userRole) {
+      return next({ name: isUserAdmin ? "AdminResidents" : "Home" });
     }
   }
 

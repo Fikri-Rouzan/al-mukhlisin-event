@@ -6,8 +6,9 @@
   --color-secondary: #008b6b;
 }
 
-* {
+html {
   font-family: var(--font-outfit);
+  scroll-behavior: smooth;
 }
 
 .nav-item.router-link-exact-active {
@@ -20,10 +21,6 @@
 
 .admin-help.router-link-exact-active {
   @apply bg-gray-600;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 .swal-container {

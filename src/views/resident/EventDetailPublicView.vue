@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../../lib/supabase";
 import Swal from "sweetalert2";
 import { Image, UserCircle2, ArrowLeft } from "lucide-vue-next";
 import { motion } from "motion-v";

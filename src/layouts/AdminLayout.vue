@@ -21,11 +21,7 @@ const closeSidebar = () => {
       class="fixed inset-0 z-20 bg-black opacity-50 md:hidden"
     ></div>
 
-    <Sidebar
-      :is-open="isSidebarOpen"
-      :logout="logout"
-      :close-sidebar="closeSidebar"
-    />
+    <Sidebar :is-open="isSidebarOpen" @close="closeSidebar" @logout="logout" />
 
     <div class="flex flex-col md:ml-64">
       <header class="p-4 bg-white shadow-md md:hidden sticky top-0 z-10">
