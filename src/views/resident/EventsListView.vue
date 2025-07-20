@@ -76,12 +76,13 @@ onMounted(async () => {
         v-for="event in events"
         :key="event.id"
         :to="`/events/${event.id}`"
+        class="h-full"
       >
         <motion.div
           :initial="{ opacity: 0 }"
           :whileInView="{ opacity: 1 }"
           :transition="{ delay: 0.7, duration: 0.5 }"
-          class="block bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden group"
+          class="flex flex-col bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden group h-full"
         >
           <div
             class="w-full h-52 bg-gray-100 flex items-center justify-center overflow-hidden"
@@ -95,19 +96,19 @@ onMounted(async () => {
             <Image v-else class="w-12 h-12 text-gray-400" />
           </div>
 
-          <div class="p-6 flex flex-col">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 capitalize">
+          <div class="p-6 flex flex-col flex-grow">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 capitalize h-16">
               {{ event.name }}
             </h2>
 
-            <div class="mb-4">
+            <div class="mb-4 h-12">
               <p class="text-md text-gray-500 font-semibold">Kategori</p>
               <p class="text-md text-gray-800 capitalize">
                 {{ event.category }}
               </p>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-6 h-12">
               <p class="text-md text-gray-500 font-semibold">Jadwal</p>
               <p class="text-md text-gray-800">
                 {{
@@ -120,9 +121,7 @@ onMounted(async () => {
               </p>
             </div>
 
-            <div class="flex-grow"></div>
-
-            <div class="mt-auto">
+            <div class="mt-auto pt-4">
               <RouterLink
                 :to="`/events/${event.id}`"
                 class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary transition-colors"
